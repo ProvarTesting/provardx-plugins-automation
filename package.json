@@ -3,7 +3,7 @@
   "description": "automation commands for test run, metadata download and project compile.",
   "version": "1.0.0",
   "dependencies": {
-    "@oclif/core": "^3.26.2",
+    "@oclif/core": "^3.26.4",
     "@salesforce/core": "^7.2.0",
     "@salesforce/sf-plugins-core": "^9.0.1"
   },
