@@ -1,0 +1,24 @@
+name: CI execution on Release Branch
+on:
+  # Should trigger only when a Pull Request is Closed
+  # (the action will not create the Tag if the Pull Request is discarded - closed without merge)
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+jobs:
+  provardx-publish-npm:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install Dependencies
+        run: |
+          yarn
+      - name: Build the project
+        run: |
+          yarn prepack

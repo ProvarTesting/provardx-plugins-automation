@@ -12,7 +12,9 @@
       "dependencies": {
         "@oclif/core": "^3.26.2",
         "@salesforce/core": "^7.2.0",
-        "@salesforce/sf-plugins-core": "^9.0.1"
+        "@salesforce/sf-plugins-core": "^9.0.1",
+        "provardx-plugins-utils": "file:../provardx-plugins-utils",
+        "xml-js": "^1.6.11"
       },
       "devDependencies": {
         "@oclif/plugin-command-snapshot": "^5.1.4",
@@ -23,6 +25,32 @@
         "shx": "0.3.4",
         "ts-node": "^10.9.2",
         "typescript": "^5.4.5"
+      },
+      "engines": {
+        "node": ">=18.0.0"
+      }
+    },
+    "../provardx-plugins-utils": {
+      "version": "1.0.0",
+      "hasInstallScript": true,
+      "license": "BSD-3-Clause",
+      "dependencies": {
+        "@oclif/core": "^3.26.2",
+        "@salesforce/core": "^7.2.0",
+        "@salesforce/sf-plugins-core": "^9.0.1",
+        "cli-ux": "^6.0.9",
+        "jsonschema": "^1.4.1",
+        "node-stream-zip": "^1.15.0"
+      },
+      "devDependencies": {
+        "@oclif/plugin-command-snapshot": "^5.1.4",
+        "@salesforce/cli-plugins-testkit": "^5.2.0",
+        "@salesforce/dev-scripts": "^9.0.0",
+        "eslint-plugin-sf-plugin": "^1.18.0",
+        "oclif": "^4.8.1",
+        "shx": "0.3.4",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.1.6"
       },
       "engines": {
         "node": ">=18.0.0"
@@ -3516,6 +3544,54 @@
         "undici-types": "~5.26.4"
       }
     },
+    "node_modules/@salesforce/dev-scripts/node_modules/marked": {
+      "version": "4.3.0",
+      "resolved": "https://registry.npmjs.org/marked/-/marked-4.3.0.tgz",
+      "integrity": "sha512-PRsaiG84bK+AMvxziE/lCFss8juXjNaWzVbN5tXAm4XjeaS9NAHhop+PjQxz2A9h8Q4M/xGmzP8vqNwy6JeK0A==",
+      "dev": true,
+      "bin": {
+        "marked": "bin/marked.js"
+      },
+      "engines": {
+        "node": ">= 12"
+      }
+    },
+    "node_modules/@salesforce/dev-scripts/node_modules/minimatch": {
+      "version": "9.0.4",
+      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-9.0.4.tgz",
+      "integrity": "sha512-KqWh+VchfxcMNRAJjj2tnsSJdNbHsVgnkBhTNrW7AjVo6OvLtxw8zfT9oLw1JSohlFzJ8jCoTgaoXvJ+kHt6fw==",
+      "dev": true,
+      "dependencies": {
+        "brace-expansion": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=16 || 14 >=14.17"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/isaacs"
+      }
+    },
+    "node_modules/@salesforce/dev-scripts/node_modules/typedoc": {
+      "version": "0.25.13",
+      "resolved": "https://registry.npmjs.org/typedoc/-/typedoc-0.25.13.tgz",
+      "integrity": "sha512-pQqiwiJ+Z4pigfOnnysObszLiU3mVLWAExSPf+Mu06G/qsc3wzbuM56SZQvONhHLncLUhYzOVkjFFpFfL5AzhQ==",
+      "dev": true,
+      "dependencies": {
+        "lunr": "^2.3.9",
+        "marked": "^4.3.0",
+        "minimatch": "^9.0.3",
+        "shiki": "^0.14.7"
+      },
+      "bin": {
+        "typedoc": "bin/typedoc"
+      },
+      "engines": {
+        "node": ">= 16"
+      },
+      "peerDependencies": {
+        "typescript": "4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x || 5.1.x || 5.2.x || 5.3.x || 5.4.x"
+      }
+    },
     "node_modules/@salesforce/kit": {
       "version": "3.1.0",
       "resolved": "https://registry.npmjs.org/@salesforce/kit/-/kit-3.1.0.tgz",
@@ -4067,10 +4143,7 @@
       "resolved": "https://registry.npmjs.org/uuid/-/uuid-9.0.1.tgz",
       "integrity": "sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==",
       "dev": true,
-      "funding": [
-        "https://github.com/sponsors/broofa",
-        "https://github.com/sponsors/ctavan"
-      ],
+      "funding": ["https://github.com/sponsors/broofa", "https://github.com/sponsors/ctavan"],
       "license": "MIT",
       "bin": {
         "uuid": "dist/bin/uuid"
@@ -9161,9 +9234,7 @@
       "resolved": "https://registry.npmjs.org/jsonparse/-/jsonparse-1.3.1.tgz",
       "integrity": "sha512-POQXvpdL69+CluYsillJ7SUhKvytYjW9vG/GKpnf+xP8UWgYEM/RaMzHHofbALDiKbbP1W8UEYmgGl39WkPZsg==",
       "dev": true,
-      "engines": [
-        "node >= 0.2.0"
-      ],
+      "engines": ["node >= 0.2.0"],
       "license": "MIT"
     },
     "node_modules/JSONStream": {
@@ -9830,9 +9901,7 @@
       "resolved": "https://registry.npmjs.org/mime/-/mime-4.0.1.tgz",
       "integrity": "sha512-5lZ5tyrIfliMXzFtkYyekWbtRXObT9OWa8IwQ5uxTBDHucNNwniRqo0yInflj+iYi5CBa6qxadGzGarDfuEOxA==",
       "dev": true,
-      "funding": [
-        "https://github.com/sponsors/broofa"
-      ],
+      "funding": ["https://github.com/sponsors/broofa"],
       "license": "MIT",
       "bin": {
         "mime": "bin/cli.js"
@@ -11156,6 +11225,10 @@
       "engines": {
         "node": ">= 4"
       }
+    },
+    "node_modules/provardx-plugins-utils": {
+      "resolved": "../provardx-plugins-utils",
+      "link": true
     },
     "node_modules/psl": {
       "version": "1.9.0",
@@ -12755,25 +12828,25 @@
       }
     },
     "node_modules/typedoc": {
-      "version": "0.25.13",
-      "resolved": "https://registry.npmjs.org/typedoc/-/typedoc-0.25.13.tgz",
-      "integrity": "sha512-pQqiwiJ+Z4pigfOnnysObszLiU3mVLWAExSPf+Mu06G/qsc3wzbuM56SZQvONhHLncLUhYzOVkjFFpFfL5AzhQ==",
+      "version": "0.23.28",
+      "resolved": "https://registry.npmjs.org/typedoc/-/typedoc-0.23.28.tgz",
+      "integrity": "sha512-9x1+hZWTHEQcGoP7qFmlo4unUoVJLB0H/8vfO/7wqTnZxg4kPuji9y3uRzEu0ZKez63OJAUmiGhUrtukC6Uj3w==",
       "dev": true,
-      "license": "Apache-2.0",
+      "peer": true,
       "dependencies": {
         "lunr": "^2.3.9",
-        "marked": "^4.3.0",
-        "minimatch": "^9.0.3",
-        "shiki": "^0.14.7"
+        "marked": "^4.2.12",
+        "minimatch": "^7.1.3",
+        "shiki": "^0.14.1"
       },
       "bin": {
         "typedoc": "bin/typedoc"
       },
       "engines": {
-        "node": ">= 16"
+        "node": ">= 14.14"
       },
       "peerDependencies": {
-        "typescript": "4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x || 5.1.x || 5.2.x || 5.3.x || 5.4.x"
+        "typescript": "4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x"
       }
     },
     "node_modules/typedoc-plugin-missing-exports": {
@@ -12792,6 +12865,7 @@
       "integrity": "sha512-PRsaiG84bK+AMvxziE/lCFss8juXjNaWzVbN5tXAm4XjeaS9NAHhop+PjQxz2A9h8Q4M/xGmzP8vqNwy6JeK0A==",
       "dev": true,
       "license": "MIT",
+      "peer": true,
       "bin": {
         "marked": "bin/marked.js"
       },
@@ -12800,16 +12874,16 @@
       }
     },
     "node_modules/typedoc/node_modules/minimatch": {
-      "version": "9.0.4",
-      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-9.0.4.tgz",
-      "integrity": "sha512-KqWh+VchfxcMNRAJjj2tnsSJdNbHsVgnkBhTNrW7AjVo6OvLtxw8zfT9oLw1JSohlFzJ8jCoTgaoXvJ+kHt6fw==",
+      "version": "7.4.6",
+      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-7.4.6.tgz",
+      "integrity": "sha512-sBz8G/YjVniEz6lKPNpKxXwazJe4c19fEfV2GDMX6AjFz+MX9uDWIZW8XreVhkFW3fkIdTv/gxWr/Kks5FFAVw==",
       "dev": true,
-      "license": "ISC",
+      "peer": true,
       "dependencies": {
         "brace-expansion": "^2.0.1"
       },
       "engines": {
-        "node": ">=16 || 14 >=14.17"
+        "node": ">=10"
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
@@ -13119,10 +13193,7 @@
       "integrity": "sha512-WNAXEw2cJs1nSRNJNRcPypARZNumgtsRTJFTNpd6turCA6JZ6cEwl4ZU3C1IHc/3IaXoPu9LdxcI5TBTdD6/pg==",
       "dev": true,
       "license": "Apache-2.0",
-      "workspaces": [
-        "vscode-extension",
-        "website"
-      ],
+      "workspaces": ["vscode-extension", "website"],
       "dependencies": {
         "braces": "^3.0.2",
         "chokidar": "^3.5.3",
@@ -13203,6 +13274,17 @@
         "is-typedarray": "^1.0.0",
         "signal-exit": "^3.0.2",
         "typedarray-to-buffer": "^3.1.5"
+      }
+    },
+    "node_modules/xml-js": {
+      "version": "1.6.11",
+      "resolved": "https://registry.npmjs.org/xml-js/-/xml-js-1.6.11.tgz",
+      "integrity": "sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==",
+      "dependencies": {
+        "sax": "^1.2.4"
+      },
+      "bin": {
+        "xml-js": "bin/cli.js"
       }
     },
     "node_modules/xml2js": {
