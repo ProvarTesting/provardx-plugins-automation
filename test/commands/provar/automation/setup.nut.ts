@@ -1,6 +1,6 @@
 import { execCmd, TestSession } from '@salesforce/cli-plugins-testkit';
 import { expect } from 'chai';
-import { errorMessages, commandConstants, SfProvarCommandResult } from 'provardx-plugins-utils';
+import { errorMessages, commandConstants, SfProvarCommandResult } from '@provartesting/provardx-plugins-utils';
 import * as setupConstants from '../../../assertion/setupConstants.js';
 
 describe('sf provar automation setup NUTs', () => {

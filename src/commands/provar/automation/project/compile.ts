@@ -12,10 +12,13 @@ import {
   fileContainsString,
   getStringAfterSubstring,
   Messages,
-} from 'provardx-plugins-utils';
+} from '@provartesting/provardx-plugins-utils';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('provardx-plugins-automation', 'provar.automation.project.compile');
+const messages = Messages.loadMessages(
+  '@provartesting/provardx-plugins-automation',
+  'provar.automation.project.compile'
+);
 
 export default class ProvarAutomationProjectCompile extends SfCommand<SfProvarCommandResult> {
   public static readonly summary = messages.getMessage('summary');

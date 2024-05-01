@@ -1,14 +1,14 @@
 {
-  "name": "provardx-plugins-automation",
+  "name": "@provartesting/provardx-plugins-automation",
   "description": "automation commands for test run, metadata download and project compile.",
-  "version": "1.0.0",
+  "version": "0.0.1-beta",
   "dependencies": {
     "@oclif/core": "^3.26.2",
     "@salesforce/core": "^7.2.0",
     "@salesforce/sf-plugins-core": "^9.0.1",
-    "provardx-plugins-utils": "file:../provardx-plugins-utils",
-    "xml-js": "^1.6.11",
-    "axios": "^1.6.7"
+    "@provartesting/provardx-plugins-utils": "0.0.2-beta",
+    "axios": "^1.6.7",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@oclif/plugin-command-snapshot": "^5.1.4",
