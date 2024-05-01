@@ -1,7 +1,7 @@
 {
   "name": "@provartesting/provardx-plugins-automation",
   "description": "automation commands for test run, metadata download and project compile.",
-  "version": "0.0.1-beta",
+  "version": "0.0.2-beta",
   "dependencies": {
     "@oclif/core": "^3.26.2",
     "@salesforce/core": "^7.2.0",
@@ -62,7 +62,6 @@
     "docs": "sf-docs",
     "format": "wireit",
     "lint": "wireit",
-    "postinstall": "yarn husky install",
     "postpack": "shx rm -f oclif.manifest.json oclif.lock",
     "prepack": "sf-prepack",
     "test": "wireit",
