@@ -9,10 +9,10 @@ import {
   SfProvarCommandResult,
   populateResult,
   Messages,
-} from 'provardx-plugins-utils';
+} from '@provartesting/provardx-plugins-utils';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('provardx-plugins-automation', 'provar.automation.setup');
+const messages = Messages.loadMessages('@provartesting/provardx-plugins-automation', 'provar.automation.setup');
 
 export default class ProvarAutomationSetup extends SfCommand<SfProvarCommandResult> {
   public static readonly summary = messages.getMessage('summary');

@@ -15,11 +15,11 @@ import {
   SfProvarCommandResult,
   populateResult,
   Messages,
-} from 'provardx-plugins-utils';
+} from '@provartesting/provardx-plugins-utils';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const mdFile: string = 'provar.automation.test.run';
-const messages = Messages.loadMessages('provardx-plugins-automation', mdFile);
+const messages = Messages.loadMessages('@provartesting/provardx-plugins-automation', mdFile);
 
 export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandResult> {
   public static readonly summary = messages.getMessage('summary');
