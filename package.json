@@ -3,7 +3,7 @@
   "description": "automation commands for test run, metadata download and project compile.",
   "version": "0.0.2-beta",
   "dependencies": {
-    "@oclif/core": "^3.26.2",
+    "@oclif/core": "^3.26.6",
     "@salesforce/core": "^7.2.0",
     "@salesforce/sf-plugins-core": "^9.0.1",
     "@provartesting/provardx-plugins-utils": "0.0.2-beta",
