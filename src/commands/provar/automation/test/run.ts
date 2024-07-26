@@ -46,24 +46,14 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
       const propertiesData = fileSystem.readFileSync(propertiesFilePath, { encoding: 'utf8' });
       const propertiesInstance = JSON.parse(propertiesData);
       if (propertiesInstance?.testCase) {
-        propertiesInstance.testCase = propertiesInstance.testCase.map((testCasePath: string) => {
-          if (testCasePath.startsWith('/tests')) {
-            return getStringAfterSubstring(testCasePath, '/tests');
-          } else if (testCasePath.startsWith('tests')) {
-            return getStringAfterSubstring(testCasePath, 'tests');
-          }
-          return testCasePath;
-        });
+        propertiesInstance.testCase = propertiesInstance.testCase.map((testCasePath: string) =>
+          testCasePath.replace(/^\/tests\//, '/')
+        );
       }
       if (propertiesInstance?.testPlan) {
-        propertiesInstance.testPlan = propertiesInstance.testPlan.map((testCasePathInstance: string) => {
-          if (testCasePathInstance.startsWith('/plans')) {
-            return getStringAfterSubstring(testCasePathInstance, '/plans');
-          } else if (testCasePathInstance.startsWith('plans')) {
-            return getStringAfterSubstring(testCasePathInstance, 'plans');
-          }
-          return testCasePathInstance;
-        });
+        propertiesInstance.testPlan = propertiesInstance.testPlan.map((testCaseInstancePath: string) =>
+          testCaseInstancePath.replace(/^\/plans\//, '/')
+        );
       }
       const rawProperties = JSON.stringify(propertiesInstance);
       const userSupport = new UserSupport();
