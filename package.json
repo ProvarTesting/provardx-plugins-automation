@@ -1,7 +1,7 @@
 {
   "name": "@provartesting/provardx-plugins-automation",
   "description": "automation commands for test run, metadata download and project compile.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "dependencies": {
     "@oclif/core": "^3.26.2",
     "@salesforce/core": "^7.2.0",
