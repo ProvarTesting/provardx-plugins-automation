@@ -45,6 +45,16 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
       /* eslint-disable */
       const propertiesData = fileSystem.readFileSync(propertiesFilePath, { encoding: 'utf8' });
       const propertiesInstance = JSON.parse(propertiesData);
+      if (propertiesInstance?.testCase) {
+        propertiesInstance.testCase = propertiesInstance.testCase.map((testCasePath: string) =>
+          testCasePath.replace(/^\/tests\//, '/')
+        );
+      }
+      if (propertiesInstance?.testPlan) {
+        propertiesInstance.testPlan = propertiesInstance.testPlan.map((testCaseInstancePath: string) =>
+          testCaseInstancePath.replace(/^\/plans\//, '/')
+        );
+      }
       const rawProperties = JSON.stringify(propertiesInstance);
       const userSupport = new UserSupport();
       const updateProperties = userSupport.prepareRawProperties(rawProperties);
