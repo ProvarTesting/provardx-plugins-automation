@@ -47,12 +47,12 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
       const propertiesInstance = JSON.parse(propertiesData);
       if (propertiesInstance?.testCase) {
         propertiesInstance.testCase = propertiesInstance.testCase.map((testCasePath: string) =>
-          testCasePath.replace(/^\/tests\//, '/')
+          testCasePath.replace(/^\tests\//, '/')
         );
       }
       if (propertiesInstance?.testPlan) {
         propertiesInstance.testPlan = propertiesInstance.testPlan.map((testCaseInstancePath: string) =>
-          testCaseInstancePath.replace(/^\/plans\//, '/')
+          testCaseInstancePath.replace(/^\plans\//, '/')
         );
       }
       const rawProperties = JSON.stringify(propertiesInstance);
