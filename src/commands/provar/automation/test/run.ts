@@ -50,7 +50,7 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
           testCasePath.replace(/^\/tests\//, '/')
         );
       }
-      if (propertiesInstance.testPlan) {
+      if (propertiesInstance?.testPlan) {
         propertiesInstance.testPlan = propertiesInstance.testPlan.map((testCaseInstancePath: string) =>
           testCaseInstancePath.replace(/^\/plans\//, '/')
         );
