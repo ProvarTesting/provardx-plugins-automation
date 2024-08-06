@@ -1,25 +1,44 @@
 {
-    "provarHome": "${PROVAR_HOME}",
-    "projectPath": "${PROVAR_PROJECT_PATH}",
-    "resultsPath": "${PROVAR_RESULTS_PATH}",
-    "smtpPath": "",
-    "licensePath": "${PROVAR_PROJECT_PATH}",
-    "resultsPathDisposition": "Increment",
-    "testOutputLevel": "BASIC",
-    "pluginOutputlevel": "WARNING",
-    "stopOnError": false,
-    "lightningMode": true,
-    "connectionRefreshType": "Reload",
-    "metadata": {
-       "metadataLevel": "Reuse",
-       "cachePath": "../.provarCaches"
+  "provarHome": "${PROVAR_HOME}",
+  "projectPath": "${PROVAR_PROJECT_PATH}",
+  "resultsPath": "${PROVAR_RESULTS_PATH}",
+  "smtpPath": "",
+  "resultsPathDisposition": "Increment",
+  "stopOnError": false,
+  "lightningMode": true,
+  "connectionRefreshType": "Reload",
+  "metadata": {
+    "metadataLevel": "Reuse",
+    "cachePath": "../.provarCaches"
+  },
+  "environment": {
+    "testEnvironment": "${PROVAR_TEST_ENVIRONMENT}",
+    "webBrowser": "Chrome",
+    "webBrowserConfig": "Full Screen",
+    "webBrowserProviderName": "Desktop",
+    "webBrowserDeviceName": "Full Screen"
+  },
+  "testprojectSecrets": "${PROVAR_TEST_PROJECT_SECRETS}",
+  "testplanFeatures": [
+    {
+      "name": "PDF",
+      "type": "OUTPUT",
+      "enabled": "true"
     },
-    "environment": {
-       "testEnvironment": "${PROVAR_TEST_ENVIRONMENT}",
-       "webBrowser": "Chrome",
-       "webBrowserConfig": "Full Screen",
-       "webBrowserProviderName": "Desktop",
-       "webBrowserDeviceName": "Full Screen"
+    {
+      "name": "PIECHART",
+      "type": "OUTPUT",
+      "enabled": "true"
     },
-    "testprojectSecrets": "${PROVAR_TEST_PROJECT_SECRETS}"
- }
+    {
+      "name": "EMAIL",
+      "type": "NOTIFICATION",
+      "enabled": "true"
+    },
+    {
+      "name": "TEST_MANAGER",
+      "type": "REPORTING",
+      "enabled": "true"
+    }
+  ]
+}
