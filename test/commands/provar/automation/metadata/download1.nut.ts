@@ -14,22 +14,7 @@ import * as validateConstants from '../../../../assertion/validateConstants.js';
 import * as metadataDownloadConstants from '../../../../assertion/metadataDownloadConstants.js';
 
 describe('setting Path at sf config path location', () => {
-  // let session: TestSession;
   const DOWNLOAD_ERROR = 'Error (1): [DOWNLOAD_ERROR]';
-  // const DOWNLOAD_ERROR = 'Error (1): [DOWNLOAD_ERROR]';
-  // enum FILE_PATHS {
-  //   METADATA_ERROR_FILE = 'metadataErrorFile.json',
-  //   MALFORMED_METADATA_FILE = 'malformedMetadataFile.json',
-  //   METADATA_DOWNLOAD_FILE = 'metadataDownloadFile.json',
-  // }
-
-  // after(async () => {
-  //   await session?.clean();
-  //   Object.values(FILE_PATHS).forEach((filePath) => {
-  //     fileSystem.unlink(filePath);
-  //   });
-  // });
-
   it('Update Provar Home and ProjectPath in provar dx properties file', async () => {
     const ProvarDXPropertiesFilePath1 = path.join(process.cwd(), './provardx-properties.json');
 
@@ -106,7 +91,7 @@ describe('setting Path at sf config path location', () => {
 
         expect(updatedConfigFile.PROVARDX_PROPERTIES_FILE_PATH).to.equal(ProvarDXPropertiesFilePath);
       } catch (error) {
-        // console.error('Error on updating the config file', error);
+        throw new Error('Error on updating the config file');
       }
     }
   });

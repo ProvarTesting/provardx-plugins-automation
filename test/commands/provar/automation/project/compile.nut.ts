@@ -9,13 +9,6 @@ import * as compileConstants from '../../../../assertion/compileConstants.js';
 import * as validateConstants from '../../../../assertion/validateConstants.js';
 
 describe('provar automation project compile NUTs', () => {
-  // let session: TestSession;
-  // Check if we're running on a Windows system
-  // const isWindows = process.platform === 'win32';
-
-  // Get the home directory path
-  // const homeDir = isWindows ? process.env.USERPROFILE : process.env.HOME;
-  // const configFilePath = homeDir + '\\.sf\\config.json';
   void UpdateFileConfigSfdx();
   let configFilePath = '';
 
@@ -30,30 +23,15 @@ describe('provar automation project compile NUTs', () => {
 
       configFilePath = path.join(Global.SF_DIR, configFileName);
     } catch (error) {
-      // console.error('Error on updating the config file', error);
+      throw new Error('Error on updating the config file');
     }
   }
 
   enum FILE_PATHS {
-    COMPILE_FILE = 'compileFile.json',
-    MISSING_FILE = 'provardx-properties.json',
+    PROVARDX_PROPERTIES_FILE = 'provardx-properties.json',
   }
 
-  // after(async () => {
-  //   await session?.clean();
-  //   Object.values(FILE_PATHS).forEach((filePath) => {
-  //     fileSystem.unlink(filePath, (err) => {
-  //       if (err) {
-  //         return err;
-  //       }
-  //     });
-  //   });
-  // });
-
   it('Boilerplate json file should not be compiled if the file has not been loaded', async () => {
-    // execCmd<SfProvarCommandResult>(
-    //   `${commandConstants.SF_PROVAR_AUTOMATION_CONFIG_GENERATE_COMMAND} -p ${FILE_PATHS.MISSING_FILE}`
-    // );
     // Remove the existing PROVARDX_PROPERTIES_FILE_PATH if it exists
     // Read the config.json file
     const fileData = fileSystem.readFileSync(configFilePath, { encoding: 'utf8' });
@@ -72,7 +50,7 @@ describe('provar automation project compile NUTs', () => {
     interface PropertyFileJsonData {
       [key: string]: string | boolean | number;
     }
-    const jsonFilePath = FILE_PATHS.MISSING_FILE;
+    const jsonFilePath = FILE_PATHS.PROVARDX_PROPERTIES_FILE;
     // reading the json data
     const jsonDataString = fileSystem.readFileSync(jsonFilePath, 'utf-8');
     const jsonData: PropertyFileJsonData = JSON.parse(jsonDataString) as PropertyFileJsonData;
@@ -80,7 +58,6 @@ describe('provar automation project compile NUTs', () => {
     jsonData.projectPath = '';
     const updatedJsonDataString = JSON.stringify(jsonData, null, 2);
     fileSystem.writeFileSync(jsonFilePath, updatedJsonDataString, 'utf-8');
-    // execCmd<SfProvarCommandResult>(`${commandConstants.SF_PROVAR_AUTOMATION_CONFIG_LOAD_COMMAND}`);
     const res = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_PROJECT_COMPILE_COMMAND}`
     ).shellOutput;
@@ -98,12 +75,6 @@ describe('provar automation project compile NUTs', () => {
   });
 
   it('Compile command should be successful', async () => {
-    // execCmd<SfProvarCommandResult>(
-    //   `${commandConstants.SF_PROVAR_AUTOMATION_CONFIG_GENERATE_COMMAND} -p ${FILE_PATHS.COMPILE_FILE}`
-    // );
-    // execCmd<SfProvarCommandResult>(
-    //   `${commandConstants.SF_PROVAR_AUTOMATION_CONFIG_LOAD_COMMAND} -p ${FILE_PATHS.COMPILE_FILE}`
-    // );
     // Read the config.json file
     const configFilePatheData = fileSystem.readFileSync(configFilePath, { encoding: 'utf8' });
 
@@ -121,7 +92,7 @@ describe('provar automation project compile NUTs', () => {
     interface PropertyFileJsonData {
       [key: string]: string | boolean | number;
     }
-    const jsonFilePath = FILE_PATHS.MISSING_FILE;
+    const jsonFilePath = FILE_PATHS.PROVARDX_PROPERTIES_FILE;
     // reading the json data
     const jsonDataString = fileSystem.readFileSync(jsonFilePath, 'utf-8');
     const jsonData: PropertyFileJsonData = JSON.parse(jsonDataString) as PropertyFileJsonData;
@@ -129,14 +100,6 @@ describe('provar automation project compile NUTs', () => {
     jsonData.projectPath = SET_PROJECT_PATH_VALUE;
     const updatedJsonDataString = JSON.stringify(jsonData, null, 2);
     fileSystem.writeFileSync(jsonFilePath, updatedJsonDataString, 'utf-8');
-
-    // set provarHome and projectPath locations
-    // execCmd<SfProvarCommandResult>(
-    //   `${commandConstants.SF_PROVAR_AUTOMATION_CONFIG_SET_COMMAND} "provarHome"=${SET_PROVAR_HOME_VALUE}`
-    // );
-    // execCmd<SfProvarCommandResult>(
-    //   `${commandConstants.SF_PROVAR_AUTOMATION_CONFIG_SET_COMMAND} "projectPath"=${SET_PROJECT_PATH_VALUE}`
-    // );
 
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_PROJECT_COMPILE_COMMAND}`
