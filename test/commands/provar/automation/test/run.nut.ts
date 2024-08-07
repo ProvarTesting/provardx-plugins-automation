@@ -3,7 +3,12 @@ import * as fileSystem from 'node:fs';
 import * as path from 'node:path';
 import { execCmd } from '@salesforce/cli-plugins-testkit';
 import { expect } from 'chai';
-import { errorMessages, commandConstants, SfProvarCommandResult } from '@provartesting/provardx-plugins-utils';
+import {
+  errorMessages,
+  commandConstants,
+  SfProvarCommandResult,
+  setNestedProperty,
+} from '@provartesting/provardx-plugins-utils';
 import { Global } from '@salesforce/core';
 import * as validateConstants from '../../../../assertion/validateConstants.js';
 import * as runConstants from '../../../../assertion/runConstants.js';
@@ -46,25 +51,6 @@ describe('provar automation test run NUTs', () => {
     // Write the updated JSON string back to the config.json file
     fileSystem.writeFileSync(configFilePath, updatedFileData, 'utf8');
 
-    /*
-    type PropertyFileJsonData = {
-      [key: string]: string | boolean;
-    }
-    function removeProperties(jsonObject: PropertyFileJsonData, propertiesToRemove: string[]): void {
-      propertiesToRemove.forEach((property) => {
-        // eslint-disable-next-line no-param-reassign
-        delete jsonObject[property];
-      });
-    }
-    const jsonFilePath = FILE_PATHS.PROVARDX_PROPERTIES_FILE;
-    const jsonData = fileSystem.readFileSync(jsonFilePath, 'utf-8');
-    const originalJsonData: PropertyFileJsonData = JSON.parse(jsonData) as PropertyFileJsonData;
-    const propertiesToRemove: string[] = ['provarHome'];
-    removeProperties(originalJsonData, propertiesToRemove);
-    const updatedJsonData = JSON.stringify(originalJsonData, null, 2);
-    fileSystem.writeFileSync(jsonFilePath, updatedJsonData, 'utf-8');
-    expect(originalJsonData).to.not.have.all.keys(propertiesToRemove);
-    */
     const res = execCmd<SfProvarCommandResult>(`${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND}`).shellOutput;
     expect(res.stderr).to.deep.equal(`Error (1): [MISSING_FILE] ${errorMessages.MISSING_FILE_ERROR}\n\n\n`);
   });
@@ -139,6 +125,45 @@ describe('provar automation test run NUTs', () => {
   });
 
   it('Test Run command should not be successful and return result in json format', () => {
+    const result = execCmd<SfProvarCommandResult>(
+      `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND} --json`
+    ).jsonOutput;
+    expect(result).to.deep.equal(runConstants.errorJson);
+  });
+
+  it('Test case should be Executed successfully when Environment is encrypted', () => {
+    interface EnvironmentSecret {
+      name: string;
+      secretsPassword: string;
+    }
+
+    interface PropertyFileJsonData {
+      [key: string]: string | boolean | number | string[] | { [key: string]: string } | EnvironmentSecret[] | undefined;
+      environmentsSecrets?: EnvironmentSecret[];
+    }
+    const jsonFilePath = FILE_PATHS.PROVARDX_PROPERTIES_FILE;
+    // reading the json data
+    const jsonDataString = fileSystem.readFileSync(jsonFilePath, 'utf-8');
+    const jsonData: PropertyFileJsonData = JSON.parse(jsonDataString) as PropertyFileJsonData;
+    jsonData.testCase = ['/Test Case 4.testcase'];
+    setNestedProperty(jsonData, 'environment.testEnvironment', 'Env');
+    jsonData.environmentsSecrets = [
+      {
+        name: 'Env',
+        secretsPassword: "Priya@123+,-./:;_{|}~'()*<=>?[]^!#$%&",
+      },
+    ];
+
+    const updatedJsonDataString = JSON.stringify(jsonData, null, 2);
+    fileSystem.writeFileSync(jsonFilePath, updatedJsonDataString, 'utf-8');
+
+    const result = execCmd<SfProvarCommandResult>(
+      `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND}`
+    ).shellOutput;
+    expect(result.stderr).to.deep.equal(runConstants.errorMessage);
+  });
+
+  it('Test case should be Executed successfully when Environment is encrypted and return result in json format', () => {
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND} --json`
     ).jsonOutput;

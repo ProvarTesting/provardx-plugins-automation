@@ -13,7 +13,7 @@ import { Global } from '@salesforce/core';
 import * as validateConstants from '../../../../assertion/validateConstants.js';
 import * as metadataDownloadConstants from '../../../../assertion/metadataDownloadConstants.js';
 
-describe('setting Path at sf config path location', () => {
+describe('sf provar config metadataDownload NUTs', () => {
   const DOWNLOAD_ERROR = 'Error (1): [DOWNLOAD_ERROR]';
   it('Update Provar Home and ProjectPath in provar dx properties file', async () => {
     const ProvarDXPropertiesFilePath1 = path.join(process.cwd(), './provardx-properties.json');
