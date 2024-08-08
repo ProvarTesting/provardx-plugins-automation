@@ -12,9 +12,9 @@ describe('provar automation project compile NUTs', () => {
   void UpdateFileConfigSfdx();
   let configFilePath = '';
   async function UpdateFileConfigSfdx(): Promise<void> {
-    const files = await fs.readdir(Global.SFDX_DIR);
+    const files = await fs.readdir(Global.SF_DIR);
     const configFileName = files.find((filename) => filename.match('.*config.json'));
-    configFilePath = path.join(`${Global.SFDX_DIR}`, `${configFileName}`);
+    configFilePath = path.join(`${Global.SF_DIR}`, `${configFileName}`);
   }
 
   enum FILE_PATHS {
