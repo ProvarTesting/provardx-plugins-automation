@@ -11,18 +11,13 @@ import * as validateConstants from '../../../../assertion/validateConstants.js';
 describe('provar automation project compile NUTs', () => {
   void UpdateFileConfigSfdx();
   let configFilePath = '';
-
   async function UpdateFileConfigSfdx(): Promise<void> {
-    try {
-      const files = await fs.readdir(Global.SF_DIR);
-      const configFileName = files.find((filename) => filename.match('.*config.json'));
-      if (!configFileName) {
-        throw new Error('config.json file not found');
-      }
-      configFilePath = path.join(`${Global.SF_DIR}`, `${configFileName}`);
-    } catch (error) {
-      throw new Error('Error on updating the config file');
+    const files = await fs.readdir(Global.SF_DIR);
+    const configFileName = files.find((filename) => filename.match('.*config.json'));
+    if (!configFileName) {
+      throw new Error('config.json file not found');
     }
+    configFilePath = path.join(`${Global.SF_DIR}`, `${configFileName}`);
   }
 
   enum FILE_PATHS {
