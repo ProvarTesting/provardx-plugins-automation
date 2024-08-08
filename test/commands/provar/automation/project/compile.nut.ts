@@ -14,9 +14,6 @@ describe('provar automation project compile NUTs', () => {
   async function UpdateFileConfigSfdx(): Promise<void> {
     const files = await fs.readdir(Global.SF_DIR);
     const configFileName = files.find((filename) => filename.match('.*config.json'));
-    if (!configFileName) {
-      throw new Error('config.json file not found');
-    }
     configFilePath = path.join(`${Global.SF_DIR}`, `${configFileName}`);
   }
 
