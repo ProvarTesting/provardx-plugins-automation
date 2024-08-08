@@ -18,11 +18,11 @@ describe('provar automation test run NUTs', () => {
   let configFilePath = '';
 
   async function UpdateFileConfigSfdx(): Promise<void> {
-    const files = await fs.readdir(Global.SF_DIR);
+    const files = await fs.readdir(Global.SFDX_DIR);
     const configFileName = files.find((filename) => filename.match('.*config.json'));
 
-    // configFilePath = path.join(Global.SF_DIR, configFileName);
-    configFilePath = path.join(`${Global.SF_DIR}`, `${configFileName}`);
+    // configFilePath = path.join(Global.SFDX_DIR, configFileName);
+    configFilePath = path.join(`${Global.SFDX_DIR}`, `${configFileName}`);
   }
   enum FILE_PATHS {
     PROVARDX_PROPERTIES_FILE = 'provardx-properties.json',
