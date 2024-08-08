@@ -21,7 +21,8 @@ describe('provar automation project compile NUTs', () => {
         throw new Error('config.json file not found');
       }
 
-      configFilePath = path.join(Global.SF_DIR, configFileName);
+      // configFilePath = path.join(Global.SF_DIR, configFileName);
+      configFilePath = path.join(`${Global.SF_DIR}`, `${configFileName}`);
     } catch (error) {
       throw new Error('Error on updating the config file');
     }
