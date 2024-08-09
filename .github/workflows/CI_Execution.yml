@@ -41,6 +41,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '11'
+          distribution: 'corretto'
       - name: Install Dependencies
         run: |
           yarn
