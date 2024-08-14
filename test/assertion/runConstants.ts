@@ -21,3 +21,5 @@ export const errorJson = {
   },
   warnings: [],
 };
+export const environmentName = 'Env';
+export const secretsPassword = "Priya@123+,-./:;_{|}~'()*<=>?[]^!#$%&";

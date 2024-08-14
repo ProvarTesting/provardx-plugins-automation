@@ -15,81 +15,42 @@ import * as metadataDownloadConstants from '../../../../assertion/metadataDownlo
 
 describe('sf provar config metadataDownload NUTs', () => {
   const DOWNLOAD_ERROR = 'Error (1): [DOWNLOAD_ERROR]';
-  it('Update Provar Home and ProjectPath in provar dx properties file', async () => {
-    const ProvarDXPropertiesFilePath1 = path.join(process.cwd(), './provardx-properties.json');
-
-    // Read the config.json file
-    const ProvarDXPropertiesFileData = await fileSystem.readFile(ProvarDXPropertiesFilePath1, { encoding: 'utf8' });
-
-    // Parse the JSON data
+  before(async () => {
+    const provarDXPropertiesFilePath1 = path.join(process.cwd(), './provardx-properties.json');
+    const provarDXPropertiesFileData = await fileSystem.readFile(provarDXPropertiesFilePath1, { encoding: 'utf8' });
     /* eslint-disable */
-    const ProvarDXPropertiesFileParsed = JSON.parse(ProvarDXPropertiesFileData);
-    ProvarDXPropertiesFileParsed['provarHome'] = path.join(process.cwd(), './ProvarHome').replace(/\\/g, '/');
-    ProvarDXPropertiesFileParsed['projectPath'] = path
+    const provarDXPropertiesFileParsed = JSON.parse(provarDXPropertiesFileData);
+    provarDXPropertiesFileParsed['provarHome'] = path.join(process.cwd(), './ProvarHome').replace(/\\/g, '/');
+    provarDXPropertiesFileParsed['projectPath'] = path
       .join(process.cwd(), './ProvarRegression/AutomationRevamp')
       .replace(/\\/g, '/');
+    setNestedProperty(provarDXPropertiesFileParsed, 'metadata.metadataLevel', 'Reuse');
+    const updatedPropertiesFileData = JSON.stringify(provarDXPropertiesFileParsed, null, 4);
+    await fileSystem.writeFile(provarDXPropertiesFilePath1, updatedPropertiesFileData, 'utf8');
 
-    setNestedProperty(ProvarDXPropertiesFileParsed, 'metadata.metadataLevel', 'Reuse');
-
-    // Convert the updated JSON object back to a string
-    const updatedPropertiesFileData = JSON.stringify(ProvarDXPropertiesFileParsed, null, 4);
-
-    // Write the updated JSON string back to the config.json file
-    await fileSystem.writeFile(ProvarDXPropertiesFilePath1, updatedPropertiesFileData, 'utf8');
-  });
-
-  it('It should update the PROVARDX_PROPERTIES_FILE_PATH in sf config.json', async () => {
-    // Call the function to perform the update
     await UpdateFileConfigSfdx();
     async function UpdateFileConfigSfdx(): Promise<void> {
       try {
-        // Read the directory and find the config.json file
         const files = await fileSystem.readdir(Global.SF_DIR);
-
         const configFileName = files.find((filename) => filename.match('.*config.json'));
-
         if (!configFileName) {
           throw new Error('config.json file not found');
         }
-
         const configFilePath = path.join(Global.SF_DIR, configFileName);
-
-        // Read the config.json file
         const fileData = await fileSystem.readFile(configFilePath, { encoding: 'utf8' });
-
-        // Parse the JSON data
         const configFile = JSON.parse(fileData);
-
-        const ProvarDXPropertiesFilePath = path.join(process.cwd(), './provardx-properties.json');
-
-        // Read the config.json file
-        const ProvarDXPropertiesFileData = await fileSystem.readFile(ProvarDXPropertiesFilePath, { encoding: 'utf8' });
-
-        // Parse the JSON data
-        const ProvarDXPropertiesFileParsed = JSON.parse(ProvarDXPropertiesFileData);
-        ProvarDXPropertiesFileParsed['provarHome'] = path.join(process.cwd(), './ProvarHome').replace(/\\/g, '/');
-
-        // Convert the updated JSON object back to a string
-        const updatedPropertiesFileData = JSON.stringify(ProvarDXPropertiesFileParsed, null, 4);
-
-        // Write the updated JSON string back to the config.json file
-        await fileSystem.writeFile(ProvarDXPropertiesFilePath, updatedPropertiesFileData, 'utf8');
-
-        // Update the PROVARDX_PROPERTIES_FILE_PATH
-        configFile.PROVARDX_PROPERTIES_FILE_PATH = ProvarDXPropertiesFilePath;
-
-        // Convert the updated JSON object back to a string
+        const provarDXPropertiesFilePath = path.join(process.cwd(), './provardx-properties.json');
+        const provarDXPropertiesFileData = await fileSystem.readFile(provarDXPropertiesFilePath, { encoding: 'utf8' });
+        const provarDXPropertiesFileParsed = JSON.parse(provarDXPropertiesFileData);
+        provarDXPropertiesFileParsed['provarHome'] = path.join(process.cwd(), './ProvarHome').replace(/\\/g, '/');
+        const updatedPropertiesFileData = JSON.stringify(provarDXPropertiesFileParsed, null, 4);
+        await fileSystem.writeFile(provarDXPropertiesFilePath, updatedPropertiesFileData, 'utf8');
+        configFile.PROVARDX_PROPERTIES_FILE_PATH = provarDXPropertiesFilePath;
         const updatedFileData = JSON.stringify(configFile, null, 4);
-
-        // Write the updated JSON string back to the config.json file
         await fileSystem.writeFile(configFilePath, updatedFileData, 'utf8');
-
-        // Read the config.json file again to verify the update
         const updatedFileDataVerify = await fileSystem.readFile(configFilePath, { encoding: 'utf8' });
         const updatedConfigFile = JSON.parse(updatedFileDataVerify);
-        // Assert that the PROVARDX_PROPERTIES_FILE_PATH has been updated correctly
-
-        expect(updatedConfigFile.PROVARDX_PROPERTIES_FILE_PATH).to.equal(ProvarDXPropertiesFilePath);
+        expect(updatedConfigFile.PROVARDX_PROPERTIES_FILE_PATH).to.equal(provarDXPropertiesFilePath);
       } catch (error) {
         throw new Error('Error on updating the config file');
       }
@@ -151,45 +112,25 @@ describe('sf provar config metadataDownload NUTs', () => {
   });
 
   it('Metadata should not be downloaded as provarHome & projectPath are not correct and return the error message', async () => {
-    const ProvarDXPropertiesFilePath = path.join(process.cwd(), './provardx-properties.json');
-
-    // Read the config.json file
-    const ProvarDXPropertiesFileData = await fileSystem.readFile(ProvarDXPropertiesFilePath, { encoding: 'utf8' });
-
-    // Parse the JSON data
-    const ProvarDXPropertiesFileParsed = JSON.parse(ProvarDXPropertiesFileData);
-    ProvarDXPropertiesFileParsed['provarHome'] = './ProvarHome1';
-
-    // Convert the updated JSON object back to a string
-    const updatedPropertiesFileData = JSON.stringify(ProvarDXPropertiesFileParsed, null, 4);
-
-    // Write the updated JSON string back to the config.json file
-    await fileSystem.writeFile(ProvarDXPropertiesFilePath, updatedPropertiesFileData, 'utf8');
-
-    // download metadata for the connection
+    const provarDXPropertiesFilePath = path.join(process.cwd(), './provardx-properties.json');
+    const provarDXPropertiesFileData = await fileSystem.readFile(provarDXPropertiesFilePath, { encoding: 'utf8' });
+    const provarDXPropertiesFileParsed = JSON.parse(provarDXPropertiesFileData);
+    provarDXPropertiesFileParsed['provarHome'] = './ProvarHome1';
+    const updatedPropertiesFileData = JSON.stringify(provarDXPropertiesFileParsed, null, 4);
+    await fileSystem.writeFile(provarDXPropertiesFilePath, updatedPropertiesFileData, 'utf8');
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} -c RegressionOrg`
     ).shellOutput;
     expect(result.stderr).to.include(DOWNLOAD_ERROR);
   });
 
-  it('Metadata should not be downloaded as provarHome & projectPath are not correct and return the error in json format', async () => {
-    const ProvarDXPropertiesFilePath = path.join(process.cwd(), './provardx-properties.json');
-
-    // Read the config.json file
-    const ProvarDXPropertiesFileData = await fileSystem.readFile(ProvarDXPropertiesFilePath, { encoding: 'utf8' });
-
-    // Parse the JSON data
-    const ProvarDXPropertiesFileParsed = JSON.parse(ProvarDXPropertiesFileData);
-    ProvarDXPropertiesFileParsed['provarHome'] = './ProvarHome1';
-
-    // Convert the updated JSON object back to a string
-    const updatedPropertiesFileData = JSON.stringify(ProvarDXPropertiesFileParsed, null, 4);
-
-    // Write the updated JSON string back to the config.json file
-    await fileSystem.writeFile(ProvarDXPropertiesFilePath, updatedPropertiesFileData, 'utf8');
-
-    // download metadata for the connection
+  it('Metadata should not be downloaded as provarHome is not correct and return the error in json format', async () => {
+    const provarDXPropertiesFilePath = path.join(process.cwd(), './provardx-properties.json');
+    const provarDXPropertiesFileData = await fileSystem.readFile(provarDXPropertiesFilePath, { encoding: 'utf8' });
+    const provarDXPropertiesFileParsed = JSON.parse(provarDXPropertiesFileData);
+    provarDXPropertiesFileParsed['provarHome'] = './ProvarHome1';
+    const updatedPropertiesFileData = JSON.stringify(provarDXPropertiesFileParsed, null, 4);
+    await fileSystem.writeFile(provarDXPropertiesFilePath, updatedPropertiesFileData, 'utf8');
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} -c RegressionOrg --json`
     ).jsonOutput;
@@ -197,23 +138,13 @@ describe('sf provar config metadataDownload NUTs', () => {
     expect((result?.result.errors?.[0] as any)?.code).to.equals('DOWNLOAD_ERROR');
   });
 
-  it('Metadata should not be downloaded as provarHome & projectPath are not correct and return the error in json format', async () => {
-    const ProvarDXPropertiesFilePath = path.join(process.cwd(), './provardx-properties.json');
-
-    // Read the config.json file
-    const ProvarDXPropertiesFileData = await fileSystem.readFile(ProvarDXPropertiesFilePath, { encoding: 'utf8' });
-
-    // Parse the JSON data
-    const ProvarDXPropertiesFileParsed = JSON.parse(ProvarDXPropertiesFileData);
-    ProvarDXPropertiesFileParsed['provarHome'] = './ProvarHome1';
-
-    // Convert the updated JSON object back to a string
-    const updatedPropertiesFileData = JSON.stringify(ProvarDXPropertiesFileParsed, null, 4);
-
-    // Write the updated JSON string back to the config.json file
-    await fileSystem.writeFile(ProvarDXPropertiesFilePath, updatedPropertiesFileData, 'utf8');
-
-    // download metadata for the connection
+  it('Metadata should not be downloaded as projectPath is not correct and return the error in json format', async () => {
+    const provarDXPropertiesFilePath = path.join(process.cwd(), './provardx-properties.json');
+    const provarDXPropertiesFileData = await fileSystem.readFile(provarDXPropertiesFilePath, { encoding: 'utf8' });
+    const provarDXPropertiesFileParsed = JSON.parse(provarDXPropertiesFileData);
+    provarDXPropertiesFileParsed['projectPath'] = './ProvarHome1';
+    const updatedPropertiesFileData = JSON.stringify(provarDXPropertiesFileParsed, null, 4);
+    await fileSystem.writeFile(provarDXPropertiesFilePath, updatedPropertiesFileData, 'utf8');
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} -c RegressionOrg --json`
     ).jsonOutput;
@@ -222,25 +153,16 @@ describe('sf provar config metadataDownload NUTs', () => {
   });
 
   it('Metadata should not be downloaded and return the error message as invalid value exists in metadataLevel property', async () => {
-    const ProvarDXPropertiesFilePath1 = path.join(process.cwd(), './provardx-properties.json');
-
-    // Read the config.json file
-    const ProvarDXPropertiesFileData = await fileSystem.readFile(ProvarDXPropertiesFilePath1, { encoding: 'utf8' });
-
-    // Parse the JSON data
-    const ProvarDXPropertiesFileParsed = JSON.parse(ProvarDXPropertiesFileData);
-    ProvarDXPropertiesFileParsed['provarHome'] = path.join(process.cwd(), './ProvarHome').replace(/\\/g, '/');
-    ProvarDXPropertiesFileParsed['projectPath'] = path
+    const provarDXPropertiesFilePath1 = path.join(process.cwd(), './provardx-properties.json');
+    const provarDXPropertiesFileData = await fileSystem.readFile(provarDXPropertiesFilePath1, { encoding: 'utf8' });
+    const provarDXPropertiesFileParsed = JSON.parse(provarDXPropertiesFileData);
+    provarDXPropertiesFileParsed['provarHome'] = path.join(process.cwd(), './ProvarHome').replace(/\\/g, '/');
+    provarDXPropertiesFileParsed['projectPath'] = path
       .join(process.cwd(), './ProvarRegression/AutomationRevamp')
       .replace(/\\/g, '/');
-    setNestedProperty(ProvarDXPropertiesFileParsed, 'metadata.metadataLevel', 'xyz');
-
-    // Convert the updated JSON object back to a string
-    const updatedPropertiesFileData = JSON.stringify(ProvarDXPropertiesFileParsed, null, 4);
-
-    // Write the updated JSON string back to the config.json file
-    await fileSystem.writeFile(ProvarDXPropertiesFilePath1, updatedPropertiesFileData, 'utf8');
-
+    setNestedProperty(provarDXPropertiesFileParsed, 'metadata.metadataLevel', 'xyz');
+    const updatedPropertiesFileData = JSON.stringify(provarDXPropertiesFileParsed, null, 4);
+    await fileSystem.writeFile(provarDXPropertiesFilePath1, updatedPropertiesFileData, 'utf8');
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} --connections RegmainOrg`
     ).shellOutput;
@@ -259,48 +181,25 @@ describe('sf provar config metadataDownload NUTs', () => {
   it('It should Delete the PROVARDX_PROPERTIES_FILE_PATH in sf config.json', async () => {
     async function deleteFileConfigSfdx(): Promise<void> {
       try {
-        // Read the directory and find the config.json file
         const files = await fileSystem.readdir(Global.SF_DIR);
         const configFileName = files.find((filename) => filename.match('.*config.json'));
-
         if (!configFileName) {
           throw new Error('config.json file not found');
         }
-
         const configFilePath = path.join(Global.SF_DIR, configFileName);
-
-        // Read the config.json file
         const fileData = await fileSystem.readFile(configFilePath, { encoding: 'utf8' });
-
-        // Parse the JSON data
         const configFile = JSON.parse(fileData);
-
-        // Remove the existing PROVARDX_PROPERTIES_FILE_PATH if it exists
         if ('PROVARDX_PROPERTIES_FILE_PATH' in configFile) {
           delete configFile.PROVARDX_PROPERTIES_FILE_PATH;
-
-          // Assert that the property was deleted
           expect(configFile).to.not.have.property('PROVARDX_PROPERTIES_FILE_PATH');
-
-          // Convert the updated JSON object back to a string
           const updatedFileData = JSON.stringify(configFile, null, 4);
-
-          // Write the updated JSON string back to the config.json file
           await fileSystem.writeFile(configFilePath, updatedFileData, 'utf8');
-
-          // Re-read the config.json file to confirm deletion
           const newFileData = await fileSystem.readFile(configFilePath, { encoding: 'utf8' });
           const newConfigFile = JSON.parse(newFileData);
-
-          // Final assertion to confirm the property is deleted
           expect(newConfigFile).to.not.have.property('PROVARDX_PROPERTIES_FILE_PATH');
         }
-      } catch (error) {
-        // console.error('Error on Deleting the config file', error);
-      }
+      } catch (error) {}
     }
-
-    // Call the function to perform the update
     await deleteFileConfigSfdx();
   });
 
