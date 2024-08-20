@@ -65,7 +65,7 @@
     "postpack": "shx rm -f oclif.manifest.json oclif.lock",
     "prepack": "sf-prepack",
     "test": "wireit",
-    "test:nuts": "nyc mocha \"**/setup.nut.ts\" \"**/compile.nut.ts\" \"**/run.nut.ts\" \"**/download.nut.ts\" --slow 4500 --timeout 600000 --parallel",
+    "test:nuts": "nyc mocha \"**/setup.nut.ts\" \"**/compile.nut.ts\" \"**/run.nut.ts\" \"**/download.nut.ts\" --slow 4500 --timeout 600000 ",
     "test:only": "wireit",
     "version": "oclif readme"
   },
