@@ -52,12 +52,11 @@ jobs:
       - name: Determine Branch Name
         id: set_branch_name
         run: |
-          if [[ "${GITHUB_HEAD_REF}" ]]; then
-             echo "BRANCH_NAME=${GITHUB_HEAD_REF}" >> $GITHUB_ENV
-          else
-             echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
-          fi
-
+           node -e "
+           const branchName = process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF.replace('refs/heads/', '');
+           console.log(`BRANCH_NAME=${branchName}`);
+           console.log(`BRANCH_NAME=${branchName}`) >> process.env.GITHUB_ENV;
+           "
       - name: Check for target branch in Utils repo
         id: check_branch
         uses: actions/github-script@v6
