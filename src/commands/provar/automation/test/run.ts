@@ -125,7 +125,7 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
       resolvers.done = resolve;
       resolvers.error = error;
     });
-    const javaProcessOutput = spawn(command, { shell: true, stdio: ['pipe', 'pipe', 'pipe'] });
+    const javaProcessOutput = spawn(command, { stdio: ['pipe', 'pipe', 'pipe'] });
 
     javaProcessOutput.stdout.on('data', (data: { toString: () => string }) => {
       const logMessage = data.toString().trim();
