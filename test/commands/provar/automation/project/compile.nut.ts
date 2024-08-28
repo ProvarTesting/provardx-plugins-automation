@@ -22,10 +22,17 @@ describe('provar automation project compile NUTs', () => {
   interface PropertyFileJsonData {
     [key: string]: string | boolean | number;
   }
-  const boilerplateFilePath = path.join(process.cwd(), './provardx-properties.json');
-  const emptyBoilerplate = JSON.stringify({}, null, 2);
-  fileSystem.writeFileSync(boilerplateFilePath, emptyBoilerplate, 'utf8');
+  
   before(async () => {
+    const boilerplateFilePath = path.join(process.cwd(), './provardx-properties.json');
+    const emptyBoilerplate = JSON.stringify({}, null, 2);
+    fileSystem.writeFileSync(boilerplateFilePath, emptyBoilerplate, 'utf8');
+    const jsonDataString = fileSystem.readFileSync(jsonFilePath, 'utf-8');
+    const jsonData: PropertyFileJsonData = JSON.parse(jsonDataString) as PropertyFileJsonData;
+    Object.assign(jsonData, propertyFileContent);
+    const updatedJsonDataString = JSON.stringify(jsonData, null, 2);
+    fileSystem.writeFileSync(jsonFilePath, updatedJsonDataString, 'utf-8');
+
     void UpdateFileConfigSfdx();
     async function UpdateFileConfigSfdx(): Promise<void> {
       const files = await fs.readdir(Global.SF_DIR);
