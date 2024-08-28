@@ -46,12 +46,7 @@ describe('provar automation project compile NUTs', () => {
       }
     }
   });
-  const jsonDataString = fileSystem.readFileSync(jsonFilePath, 'utf-8');
-  const jsonData: PropertyFileJsonData = JSON.parse(jsonDataString) as PropertyFileJsonData;
-  Object.assign(jsonData, propertyFileContent);
-  const updatedJsonDataString = JSON.stringify(jsonData, null, 2);
-  fileSystem.writeFileSync(jsonFilePath, updatedJsonDataString, 'utf-8');
-
+  
   it('Boilerplate json file should not be compiled if the file has not been loaded', async () => {
     const fileData = fileSystem.readFileSync(configFilePath, { encoding: 'utf8' });
     /* eslint-disable */
