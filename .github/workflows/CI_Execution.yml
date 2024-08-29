@@ -137,11 +137,6 @@ jobs:
             export DISPLAY=:0
           fi
         shell: bash
-      - name: Checking Software Versions
-        run: |
-          npm --version
-          java -version
-          google-chrome --version
       - name: Include License
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
