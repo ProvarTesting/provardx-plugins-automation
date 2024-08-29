@@ -114,18 +114,21 @@ jobs:
                chmod 777 ./bin/run.js
           fi
         shell: bash
-      - name: Setup Chrome
+      - name: Setup Chrome on Linux
+        if: runner.os == 'Linux'
         run: |
-            if [ "$RUNNER_OS" == "Linux" ]; then
-              wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-              sudo dpkg -i google-chrome-stable_current_amd64.deb
-              sudo apt-get install -f
-            elif [ "$RUNNER_OS" == "Windows" ]; then
-              $ProgressPreference = 'SilentlyContinue'
-              Invoke-WebRequest -Uri "https://dl.google.com/chrome/install/latest/chrome_installer.exe" -OutFile "$env:TEMP\chrome_installer.exe"
-              Start-Process -FilePath "$env:TEMP\chrome_installer.exe" -ArgumentList "/silent /install" -NoNewWindow -Wait
-            fi
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb
+          sudo apt-get install -f
         shell: bash
+
+      - name: Setup Chrome on Windows
+        if: runner.os == 'Windows'
+        run: |
+          $ProgressPreference = 'SilentlyContinue'
+          Invoke-WebRequest -Uri "https://dl.google.com/chrome/install/latest/chrome_installer.exe" -OutFile "$env:TEMP\chrome_installer.exe"
+          Start-Process -FilePath "$env:TEMP\chrome_installer.exe" -ArgumentList "/silent /install" -NoNewWindow -Wait
+        shell: pwsh
       - name: Setup Xvfb
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
