@@ -121,6 +121,7 @@ jobs:
             sudo dpkg -i google-chrome-stable_current_amd64.deb
             sudo apt-get install -f
           fi
+        shell: bash
       - name: Setup Xvfb
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
@@ -128,6 +129,7 @@ jobs:
             sudo Xvfb :0 -ac -screen 0 1024x768x24 &
             export DISPLAY=:0
           fi
+        shell: bash
       - name: Checking Software Versions
         run: |
           npm --version
@@ -139,6 +141,7 @@ jobs:
             mkdir -p $HOME/Provar/.licenses 
             echo "$MY_LICENSE" >> $HOME/Provar/.licenses/License.properties 
           fi
+        shell: bash
       - name: Execute NUTS
         run: |
           sf plugins link .
