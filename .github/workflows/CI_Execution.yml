@@ -116,11 +116,15 @@ jobs:
         shell: bash
       - name: Setup Chrome
         run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-            sudo dpkg -i google-chrome-stable_current_amd64.deb
-            sudo apt-get install -f
-          fi
+            if [ "$RUNNER_OS" == "Linux" ]; then
+              wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+              sudo dpkg -i google-chrome-stable_current_amd64.deb
+              sudo apt-get install -f
+            elif [ "$RUNNER_OS" == "Windows" ]; then
+              $ProgressPreference = 'SilentlyContinue'
+              Invoke-WebRequest -Uri "https://dl.google.com/chrome/install/latest/chrome_installer.exe" -OutFile "$env:TEMP\chrome_installer.exe"
+              Start-Process -FilePath "$env:TEMP\chrome_installer.exe" -ArgumentList "/silent /install" -NoNewWindow -Wait
+            fi
         shell: bash
       - name: Setup Xvfb
         run: |
