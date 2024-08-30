@@ -96,7 +96,7 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
         ' ' +
         userInfoString +
         ' Runtests';
-      console.log(testRunCommand);
+
       await this.runJavaCommand(testRunCommand, logFilePath);
     } catch (error: any) {
       if (error.name === 'SyntaxError') {
