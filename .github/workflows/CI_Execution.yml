@@ -137,13 +137,18 @@ jobs:
             export DISPLAY=:0
           fi
         shell: bash
-      - name: Include License
+      - name: Include License on Linux
+        if: runner.os == 'Linux'
         run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
             mkdir -p $HOME/Provar/.licenses 
             echo "$MY_LICENSE" >> $HOME/Provar/.licenses/License.properties 
-          fi
         shell: bash
+      - name: Include License on Windows
+        if: runner.os == 'Windows'
+        run: |
+          New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\Provar\.licenses"
+          Set-Content -Path "$env:USERPROFILE\Provar\.licenses\License.properties" -Value $env:MY_LICENSE
+        shell: pwsh
       - name: Execute NUTS
         run: |
           sf plugins link .
