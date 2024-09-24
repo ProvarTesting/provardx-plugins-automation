@@ -25,7 +25,7 @@ jobs:
       MY_LICENSE: ${{ secrets.PROVAR_LICENSE }}
     strategy:
       matrix:
-        os: ${{ fromJSON(format('[{0}]', inputs.OS || '"ubuntu-latest"')) }}
+        os: ${{ fromJSON(format('[{0}]', inputs.OS || '"ubuntu-latest" || "macos-latest"')) }}
         nodeversion: [18]
     runs-on: ${{ matrix.os }}
     steps:
@@ -41,7 +41,7 @@ jobs:
       - name: 'Cache node_modules'
         uses: actions/cache@v3
         with:
-          path: ~/.npm
+          path: ${{ matrix.os == 'windows-latest' && 'C:\\Users\\runneradmin\\AppData\\Roaming\\npm-cache' || '~/.npm' }}
           key: ${{ runner.os }}-node-v${{ matrix.nodeversion }}-${{ hashFiles('**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-node-v${{ matrix.nodeversion }}-
@@ -89,16 +89,16 @@ jobs:
             yarn && yarn prepack
             yarn link
       - name: Install Dependencies
-        run: |
-          pwd
-          yarn
+        run: yarn
+        
       - name: Link utils package
-        run: |
-          yarn link @provartesting/provardx-plugins-utils
+        run: yarn link @provartesting/provardx-plugins-utils
+        
       - name: Build the project
         run: |
            sf plugins link .
            yarn prepack
+           
       - name: Check out Regression repo
         uses: actions/checkout@v4
         with:
