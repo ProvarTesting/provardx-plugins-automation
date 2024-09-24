@@ -25,7 +25,7 @@ jobs:
       MY_LICENSE: ${{ secrets.PROVAR_LICENSE }}
     strategy:
       matrix:
-        os: ${{ fromJSON(format('[{0}]', inputs.OS || '"ubuntu-latest"')) }}
+        os: ${{ fromJSON(format('[{0}]', inputs.OS || '"ubuntu-latest" || "macos-latest"')) }}
         nodeversion: [18]
     runs-on: ${{ matrix.os }}
     steps:
@@ -41,7 +41,7 @@ jobs:
       - name: 'Cache node_modules'
         uses: actions/cache@v3
         with:
-          path: ~/.npm
+          path: ${{ matrix.os == 'windows-latest' && 'C:\\Users\\runneradmin\\AppData\\Roaming\\npm-cache' || '~/.npm' }}
           key: ${{ runner.os }}-node-v${{ matrix.nodeversion }}-${{ hashFiles('**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-node-v${{ matrix.nodeversion }}-
@@ -51,13 +51,12 @@ jobs:
 
       - name: Determine Branch Name
         id: set_branch_name
-        run: |
-          if [[ "${GITHUB_HEAD_REF}" ]]; then
-             echo "BRANCH_NAME=${GITHUB_HEAD_REF}" >> $GITHUB_ENV
-          else
-             echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
-          fi
-
+        uses: actions/github-script@v6
+        with:
+         script: |
+           const branchName = process.env.GITHUB_HEAD_REF || context.ref.replace('refs/heads/', '');
+           core.exportVariable('BRANCH_NAME', branchName);
+           return branchName;
       - name: Check for target branch in Utils repo
         id: check_branch
         uses: actions/github-script@v6
@@ -90,16 +89,16 @@ jobs:
             yarn && yarn prepack
             yarn link
       - name: Install Dependencies
-        run: |
-          pwd
-          yarn
+        run: yarn
+        
       - name: Link utils package
-        run: |
-          yarn link @provartesting/provardx-plugins-utils
+        run: yarn link @provartesting/provardx-plugins-utils
+        
       - name: Build the project
         run: |
            sf plugins link .
            yarn prepack
+           
       - name: Check out Regression repo
         uses: actions/checkout@v4
         with:
@@ -115,13 +114,21 @@ jobs:
                chmod 777 ./bin/run.js
           fi
         shell: bash
-      - name: Setup Chrome
+      - name: Setup Chrome on Linux
+        if: runner.os == 'Linux'
         run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-            sudo dpkg -i google-chrome-stable_current_amd64.deb
-            sudo apt-get install -f
-          fi
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb
+          sudo apt-get install -f
+        shell: bash
+
+      - name: Setup Chrome on Windows
+        if: runner.os == 'Windows'
+        run: |
+          $ProgressPreference = 'SilentlyContinue'
+          Invoke-WebRequest -Uri "https://dl.google.com/chrome/install/latest/chrome_installer.exe" -OutFile "$env:TEMP\chrome_installer.exe"
+          Start-Process -FilePath "$env:TEMP\chrome_installer.exe" -ArgumentList "/silent /install" -NoNewWindow -Wait
+        shell: pwsh
       - name: Setup Xvfb
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
@@ -129,17 +136,19 @@ jobs:
             sudo Xvfb :0 -ac -screen 0 1024x768x24 &
             export DISPLAY=:0
           fi
-      - name: Checking Software Versions
+        shell: bash
+      - name: Include License on Linux
+        if: runner.os == 'Linux'
         run: |
-          npm --version
-          java -version
-          google-chrome --version
-      - name: Include License
-        run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
             mkdir -p $HOME/Provar/.licenses 
             echo "$MY_LICENSE" >> $HOME/Provar/.licenses/License.properties 
-          fi
+        shell: bash
+      - name: Include License on Windows
+        if: runner.os == 'Windows'
+        run: |
+          New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\Provar\.licenses"
+          Set-Content -Path "$env:USERPROFILE\Provar\.licenses\License.properties" -Value $env:MY_LICENSE
+        shell: pwsh
       - name: Execute NUTS
         run: |
           sf plugins link .
