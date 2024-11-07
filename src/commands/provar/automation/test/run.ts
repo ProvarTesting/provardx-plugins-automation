@@ -169,7 +169,21 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
       errorObj.setMessage(`Error ${getStringAfterSubstring(logMessage, 'Error')}`);
       this.genericErrorHandler.addErrorsToList(errorObj);
     }
-    fileSystem.writeFileSync(logFilePath, logMessage, { encoding: 'utf-8' });
+    try {
+      fileSystem.writeFileSync(logFilePath, logMessage, { encoding: 'utf-8' });
+    } catch (error: any) {
+      if (error.code === 'ENOENT') {
+        const error: GenericError = new GenericError();
+        error.setCode('INVALID_PATH');
+        error.setMessage(`The provided output file path does not exist or is invalid.`);
+        this.genericErrorHandler.addErrorsToList(error);
+      } else if (error.code === 'EPERM' || error.code === 'EACCES') {
+        const error: GenericError = new GenericError();
+        error.setCode('INSUFFICIENT_PERMISSIONS');
+        error.setMessage('The user does not have permissions to create the output file.');
+        this.genericErrorHandler.addErrorsToList(error);
+      }
+    }
   }
 
   private getFailureMessagesFromXML(filePath: string): void {
