@@ -1,5 +1,6 @@
 import * as fileSystem from 'node:fs';
 import { execSync, spawn } from 'node:child_process';
+import * as path from 'node:path';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { xml2json } from 'xml-js';
 import {
@@ -91,7 +92,6 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
         this.genericErrorHandler.addErrorsToList(errorObj);
         return sfProvarAutomationTestRun.populateResult(flags, this.genericErrorHandler, messages, this.log.bind(this));
       }
-      const logFilePath = projectPath + '/log.txt';
 
       const provarDxJarPath = propertiesInstance.provarHome + '/provardx/provardx.jar';
       const testRunCommand =
@@ -105,6 +105,7 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
         ' Runtests';
 
       if (flags['output-file']) {
+        const logFilePath = path.resolve(flags['output-file']);
         await this.runJavaCommand(testRunCommand, logFilePath);
       } else {
         execSync(testRunCommand, { stdio: 'inherit' });
