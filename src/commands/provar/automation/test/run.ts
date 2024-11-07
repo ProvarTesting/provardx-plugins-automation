@@ -169,7 +169,7 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
       errorObj.setMessage(`Error ${getStringAfterSubstring(logMessage, 'Error')}`);
       this.genericErrorHandler.addErrorsToList(errorObj);
     }
-    fileSystem.appendFileSync(logFilePath, logMessage, { encoding: 'utf-8' });
+    fileSystem.writeFileSync(logFilePath, logMessage, { encoding: 'utf-8' });
   }
 
   private getFailureMessagesFromXML(filePath: string): void {
