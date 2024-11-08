@@ -137,24 +137,28 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
       resolvers.done = resolve;
       resolvers.error = error;
     });
-    const javaProcessOutput = spawn(command, { shell: true, stdio: ['pipe', 'pipe', 'pipe'] });
+    try {
+      const javaProcessOutput = spawn(command, { shell: true, stdio: ['pipe', 'pipe', 'pipe'] });
 
-    javaProcessOutput.stdout.on('data', (data: { toString: () => string }) => {
-      const logMessage = data.toString().trim();
-      this.extractReportAndAddFailuresToErrorHandler(logMessage, logFilePath);
-    });
-    javaProcessOutput.stderr.on('error', (error: { toString: () => string }) => {
-      const logError = error.toString().trim();
-      this.extractReportAndAddFailuresToErrorHandler(logError, logFilePath);
-    });
-    javaProcessOutput.stderr.on('data', (error: { toString: () => string }) => {
-      const logError = error.toString().trim();
-      this.extractReportAndAddFailuresToErrorHandler(logError, logFilePath);
-    });
+      javaProcessOutput.stdout.on('data', (data: { toString: () => string }) => {
+        const logMessage = data.toString().trim();
+        this.extractReportAndAddFailuresToErrorHandler(logMessage, logFilePath);
+      });
+      javaProcessOutput.stderr.on('error', (error: { toString: () => string }) => {
+        const logError = error.toString().trim();
+        this.extractReportAndAddFailuresToErrorHandler(logError, logFilePath);
+      });
+      javaProcessOutput.stderr.on('data', (error: { toString: () => string }) => {
+        const logError = error.toString().trim();
+        this.extractReportAndAddFailuresToErrorHandler(logError, logFilePath);
+      });
 
-    javaProcessOutput.stderr.on('finish', (error: { toString: () => string }) => {
-      resolvers.done();
-    });
+      javaProcessOutput.stderr.on('finish', (error: { toString: () => string }) => {
+        resolvers.done();
+      });
+    } catch (error: any) {
+      return;
+    }
     return promise;
   }
 
@@ -183,6 +187,7 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
         error.setMessage('The user does not have permissions to create the output file.');
         this.genericErrorHandler.addErrorsToList(error);
       }
+      throw error;
     }
   }
 
