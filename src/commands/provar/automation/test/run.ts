@@ -174,7 +174,7 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
       this.genericErrorHandler.addErrorsToList(errorObj);
     }
     try {
-      fileSystem.writeFileSync(logFilePath, logMessage, { encoding: 'utf-8' });
+      fileSystem.appendFileSync(logFilePath, logMessage, { encoding: 'utf-8' });
     } catch (error: any) {
       if (error.code === 'ENOENT') {
         const error: GenericError = new GenericError();
