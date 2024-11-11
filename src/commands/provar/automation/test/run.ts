@@ -104,12 +104,7 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
         userInfoString +
         ' Runtests';
 
-      // if (flags['output-file']) {
-      // const logFilePath = path.resolve(flags['output-file'] ?? '');
       await this.runJavaCommand(testRunCommand, flags['output-file'] ?? '');
-      // } else {
-      //   execSync(testRunCommand, { stdio: 'inherit' });
-      // }
     } catch (error: any) {
       if (error.name === 'SyntaxError') {
         const errorObj: GenericError = new GenericError();
