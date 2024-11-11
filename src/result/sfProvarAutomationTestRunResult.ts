@@ -22,6 +22,12 @@ export class SfProvarAutomationTestRun extends SFProvarResult {
     let result: SfProvarCommandResult = { success: true };
 
     const errorObjects: Error[] | object[] = errorHandler.getErrors();
+    if (flags['output-file']) {
+      log(`The test results are stored in ${flags['output-file']}`);
+    } else {
+      log('-------------------------------------------------------------------------------------');
+    }
+
     if (errorObjects.length > 0) {
       if (!flags['json']) {
         throw messages.createError('error.MultipleFailure', errorHandler.errorsToStringArray());
@@ -31,12 +37,7 @@ export class SfProvarAutomationTestRun extends SFProvarResult {
         errors: errorObjects,
       };
     } else {
-      if (flags['output-file']) {
-        log(`The test results are stored in ${flags['output-file']}`);
-      } else {
-        log();
-        messages.messages.has('success_message') ? log(messages.getMessage('success_message')) : '';
-      }
+      messages.messages.has('success_message') ? log(messages.getMessage('success_message')) : '';
     }
     return result;
   }
