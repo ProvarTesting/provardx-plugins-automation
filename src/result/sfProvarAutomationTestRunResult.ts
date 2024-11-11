@@ -22,6 +22,7 @@ export class SfProvarAutomationTestRun extends SFProvarResult {
     let result: SfProvarCommandResult = { success: true };
 
     const errorObjects: Error[] | object[] = errorHandler.getErrors();
+    log();
     if (errorObjects.length > 0) {
       if (!flags['json']) {
         throw messages.createError('error.MultipleFailure', errorHandler.errorsToStringArray());
@@ -31,7 +32,6 @@ export class SfProvarAutomationTestRun extends SFProvarResult {
         errors: errorObjects,
       };
     } else {
-      log();
       messages.messages.has('success_message') ? log(messages.getMessage('success_message')) : '';
     }
     return result;
