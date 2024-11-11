@@ -31,6 +31,7 @@ export class SfProvarAutomationTestRun extends SFProvarResult {
         errors: errorObjects,
       };
     } else {
+      log();
       messages.messages.has('success_message') ? log(messages.getMessage('success_message')) : '';
     }
     return result;
