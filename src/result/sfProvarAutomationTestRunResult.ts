@@ -22,9 +22,9 @@ export class SfProvarAutomationTestRun extends SFProvarResult {
     let result: SfProvarCommandResult = { success: true };
 
     const errorObjects: Error[] | object[] = errorHandler.getErrors();
-    log();
     if (errorObjects.length > 0) {
       if (!flags['json']) {
+        log();
         throw messages.createError('error.MultipleFailure', errorHandler.errorsToStringArray());
       }
       result = {
@@ -32,7 +32,12 @@ export class SfProvarAutomationTestRun extends SFProvarResult {
         errors: errorObjects,
       };
     } else {
-      messages.messages.has('success_message') ? log(messages.getMessage('success_message')) : '';
+      if (flags['output-file']) {
+        log(`The test results are stored in ${flags['output-file']}`);
+      } else {
+        log();
+        messages.messages.has('success_message') ? log(messages.getMessage('success_message')) : '';
+      }
     }
     return result;
   }
