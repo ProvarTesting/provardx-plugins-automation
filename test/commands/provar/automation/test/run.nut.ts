@@ -76,13 +76,16 @@ describe('provar automation test run NUTs', () => {
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND}`
     ).shellOutput;
-    // expect(result.stdout).to.deep.equal(runConstants.successMessage);
+
+    expect(result.stdout).to.deep.contains(runConstants.successMessage);
     runConstants.successfulResultSubstrings.forEach(resultSubstring => {
-      expect(result.stdout).to.include(resultSubstring);
+
+      expect(result.stdout + result.stderr).to.include(resultSubstring);
     });
   });
 
   it('Test Run command should be successful in outputfile', async () => {
+    /* eslint-disable */
     const configFilePatheData = fileSystem.readFileSync(configFilePath, { encoding: 'utf8' });
     const configFilePathParsed = JSON.parse(configFilePatheData);
     configFilePathParsed['PROVARDX_PROPERTIES_FILE_PATH'] = path.join(process.cwd(), './provardx-properties.json');
@@ -107,7 +110,7 @@ describe('provar automation test run NUTs', () => {
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND} -o ${outputFile}`
     ).shellOutput;
-    expect(result.stdout).to.deep.equal('The results were stored in ' + outputFile + '\n');
+    expect(result.stdout).to.deep.contains('The test results are stored in ' + outputFile + '\n');
     if (!outputFile.match('/')) {
       filePath = path.join(process.cwd(), 'result.txt');
     } else if (outputFile.startsWith('.')) {
@@ -124,11 +127,17 @@ describe('provar automation test run NUTs', () => {
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND} --json`
     ).jsonOutput;
-    // expect(result).to.deep.equal(runConstants.SuccessJson);
-    runConstants.successfulResultSubstrings.forEach(resultSubstring => {
-      expect(result).to.include(resultSubstring);
-    });
+    expect(result).to.deep.equal(runConstants.SuccessJson);
   });
+
+  it('Test Run command should be successful in case of outfile and return result in json', () => {
+    const outputFile = runConstants.outputFileAtRelativeLocation;
+    const result = execCmd<SfProvarCommandResult>(
+      `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND} -o ${outputFile} --json`
+    ).jsonOutput;
+    expect(result).to.deep.equal(runConstants.SuccessJson);
+  });
+
   it('Test Run command should not be successful and return the error', () => {
     interface PropertyFileJsonData {
       [key: string]: string | boolean | number | string[];
@@ -142,9 +151,9 @@ describe('provar automation test run NUTs', () => {
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND}`
     ).shellOutput;
-    // expect(result.stderr).to.deep.equal(runConstants.errorMessage);
+    expect(result.stderr).to.deep.contains(runConstants.errorMessage);
     runConstants.successfulResultSubstrings.forEach(resultSubstring => {
-      expect(result.stdout).to.include(resultSubstring);
+      expect(result.stdout + result.stderr).to.include(resultSubstring);
     });
   });
 
@@ -152,10 +161,7 @@ describe('provar automation test run NUTs', () => {
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND} --json`
     ).jsonOutput;
-    // expect(result).to.deep.equal(runConstants.errorJson);
-    runConstants.successfulResultSubstrings.forEach(resultSubstring => {
-      expect(result).to.include(resultSubstring);
-    });
+    expect(result).to.deep.equal(runConstants.errorJson);
   });
 
   it('Test case should be Executed successfully when Environment is encrypted', () => {
@@ -185,9 +191,9 @@ describe('provar automation test run NUTs', () => {
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND}`
     ).shellOutput;
-    // expect(result.stderr).to.deep.equal(runConstants.errorMessage);
+    expect(result.stderr).to.deep.contains(runConstants.errorMessage);
     runConstants.successfulResultSubstrings.forEach(resultSubstring => {
-      expect(result.stdout).to.include(resultSubstring);
+      expect(result.stdout + result.stderr).to.include(resultSubstring);
     });
   });
 
@@ -195,9 +201,6 @@ describe('provar automation test run NUTs', () => {
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND} --json`
     ).jsonOutput;
-    // expect(result).to.deep.equal(runConstants.errorJson);
-    runConstants.successfulResultSubstrings.forEach(resultSubstring => {
-      expect(result).to.include(resultSubstring);
-    });
+    expect(result).to.deep.equal(runConstants.errorJson);
   });
 });
