@@ -31,9 +31,7 @@ export class SfProvarAutomationTestRun extends SFProvarResult {
         errors: errorObjects,
       };
     } else {
-      if (flags['output-file']) {
-        log(`The test results are stored in ${flags['output-file']}`);
-      }
+      messages.messages.has('success_message') ? log(messages.getMessage('success_message')) : '';
     }
     return result;
   }

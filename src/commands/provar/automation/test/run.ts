@@ -1,5 +1,5 @@
 import * as fileSystem from 'node:fs';
-import { execSync, spawn } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import * as path from 'node:path';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { xml2json } from 'xml-js';
@@ -104,12 +104,12 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
         userInfoString +
         ' Runtests';
 
-      if (flags['output-file']) {
-        const logFilePath = path.resolve(flags['output-file']);
-        await this.runJavaCommand(testRunCommand, logFilePath);
-      } else {
-        execSync(testRunCommand, { stdio: 'inherit' });
-      }
+      // if (flags['output-file']) {
+      // const logFilePath = path.resolve(flags['output-file'] ?? '');
+      await this.runJavaCommand(testRunCommand, flags['output-file'] ?? '');
+      // } else {
+      //   execSync(testRunCommand, { stdio: 'inherit' });
+      // }
     } catch (error: any) {
       if (error.name === 'SyntaxError') {
         const errorObj: GenericError = new GenericError();
@@ -173,21 +173,26 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
       errorObj.setMessage(`Error ${getStringAfterSubstring(logMessage, 'Error')}`);
       this.genericErrorHandler.addErrorsToList(errorObj);
     }
-    try {
-      fileSystem.appendFileSync(logFilePath, logMessage, { encoding: 'utf-8' });
-    } catch (error: any) {
-      if (error.code === 'ENOENT') {
-        const error: GenericError = new GenericError();
-        error.setCode('INVALID_PATH');
-        error.setMessage(`The provided output file path does not exist or is invalid.`);
-        this.genericErrorHandler.addErrorsToList(error);
-      } else if (error.code === 'EPERM' || error.code === 'EACCES') {
-        const error: GenericError = new GenericError();
-        error.setCode('INSUFFICIENT_PERMISSIONS');
-        error.setMessage('The user does not have permissions to create the output file.');
-        this.genericErrorHandler.addErrorsToList(error);
+
+    if (logFilePath.length > 0) {
+      try {
+        fileSystem.appendFileSync(path.resolve(logFilePath), logMessage, { encoding: 'utf-8' });
+      } catch (error: any) {
+        if (error.code === 'ENOENT') {
+          const error: GenericError = new GenericError();
+          error.setCode('INVALID_PATH');
+          error.setMessage(`The provided output file path does not exist or is invalid.`);
+          this.genericErrorHandler.addErrorsToList(error);
+        } else if (error.code === 'EPERM' || error.code === 'EACCES') {
+          const error: GenericError = new GenericError();
+          error.setCode('INSUFFICIENT_PERMISSIONS');
+          error.setMessage('The user does not have permissions to create the output file.');
+          this.genericErrorHandler.addErrorsToList(error);
+        }
+        throw error;
       }
-      throw error;
+    } else {
+      this.log(logMessage);
     }
   }
 
