@@ -24,7 +24,6 @@ export class SfProvarAutomationTestRun extends SFProvarResult {
     const errorObjects: Error[] | object[] = errorHandler.getErrors();
     if (errorObjects.length > 0) {
       if (!flags['json']) {
-        log();
         throw messages.createError('error.MultipleFailure', errorHandler.errorsToStringArray());
       }
       result = {
