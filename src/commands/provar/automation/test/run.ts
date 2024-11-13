@@ -169,7 +169,7 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
       this.genericErrorHandler.addErrorsToList(errorObj);
     }
 
-    if (logFilePath.length > 0) {
+    if (!logFilePath) {
       try {
         fileSystem.appendFileSync(path.resolve(logFilePath), logMessage, { encoding: 'utf-8' });
       } catch (error: any) {
