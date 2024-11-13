@@ -50,8 +50,6 @@ export default class ProvarMetadataDownload extends SfCommand<SfProvarCommandRes
 
       if (flags.connections) {
         this.doConnectionOverrides(propertiesInstance, flags?.connections);
-
-        // propertiesInstance.connectionName = removeSpaces(flags.connections);
       }
 
       const rawProperties = JSON.stringify(propertiesInstance);
