@@ -10,9 +10,9 @@ import {
   populateResult,
   UserSupport,
   fileContainsString,
-  removeSpaces,
   getStringAfterSubstring,
   Messages,
+  removeSpaces,
 } from '@provartesting/provardx-plugins-utils';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
@@ -49,10 +49,10 @@ export default class ProvarMetadataDownload extends SfCommand<SfProvarCommandRes
       const propertiesInstance = JSON.parse(propertiesdata);
 
       if (flags.connections) {
-        propertiesInstance.connectionName = removeSpaces(flags.connections);
-      }
+        this.doConnectionOverrides(propertiesInstance, flags?.connections);
 
-      this.doConnectionOverrides(propertiesInstance);
+        // propertiesInstance.connectionName = removeSpaces(flags.connections);
+      }
 
       const rawProperties = JSON.stringify(propertiesInstance);
       const userSupport = new UserSupport();
@@ -92,20 +92,33 @@ export default class ProvarMetadataDownload extends SfCommand<SfProvarCommandRes
     return populateResult(flags, this.errorHandler, messages, this.log.bind(this));
   }
 
-  private doConnectionOverrides(properties: any): void {
-    if (!properties.connectionOverride && !properties.connectionName) {
+  private doConnectionOverrides(properties: any, flagConnections: string): void {
+    if (!properties.connectionOverride && !flagConnections) {
       return;
     }
 
-    if (properties.connectionName && properties.connectionOverride) {
-      const connections = properties.connectionName.split(',');
-      const connectionOverride = [];
+    if (properties.connectionOverride && flagConnections) {
+      const connections = removeSpaces(flagConnections).split(',');
+      const connectionOverrideProperty = [];
       for (const override of properties.connectionOverride) {
         if (connections.indexOf(override.connection) !== -1) {
-          connectionOverride.push(override);
+          connectionOverrideProperty.push(override);
         }
       }
-      properties.connectionOverride = connectionOverride;
+
+      const connectionProperty: string[] = [];
+      const overridenConnections: string[] = [];
+      for (const override of connectionOverrideProperty) {
+        overridenConnections.push(override?.connection);
+      }
+      for (const connection of connections) {
+        if (overridenConnections.indexOf(connection) == -1) {
+          connectionProperty.push(connection);
+        }
+      }
+      properties.connectionName = connectionProperty.join(',');
+
+      properties.connectionOverride = connectionOverrideProperty;
     }
   }
 }
