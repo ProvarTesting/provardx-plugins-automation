@@ -91,27 +91,22 @@ export default class ProvarMetadataDownload extends SfCommand<SfProvarCommandRes
   }
 
   private doConnectionOverrides(properties: any, flagConnections: string): void {
-    if (!properties.connectionOverride && !flagConnections) {
-      return;
-    }
+    const connections = removeSpaces(flagConnections).split(',');
+    const connectionOverride: { connection: string; username: string }[] = [];
 
-    if (properties.connectionOverride && flagConnections) {
-      const connections = removeSpaces(flagConnections).split(',');
-      const connectionOverride: { connection: string; username: string }[] = [];
-
+    if (properties.connectionOverride) {
       for (const override of properties.connectionOverride) {
         if (connections.indexOf(override.connection) !== -1) {
           connectionOverride.push(override);
         }
       }
-
-      const connectionProperty: string[] = connections.filter(
-        (connection) => !connectionOverride.some((override) => override?.connection === connection)
-      );
-
-      properties.connectionName = connectionProperty.join(',');
-
       properties.connectionOverride = connectionOverride;
     }
+
+    const connectionProperty: string[] = connections.filter(
+      (connection) => !connectionOverride.some((override) => override?.connection === connection)
+    );
+
+    properties.connectionName = connectionProperty.join(',');
   }
 }
