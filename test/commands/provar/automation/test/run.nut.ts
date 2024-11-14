@@ -78,8 +78,7 @@ describe('provar automation test run NUTs', () => {
     ).shellOutput;
 
     expect(result.stdout).to.deep.contains(runConstants.successMessage);
-    runConstants.successfulResultSubstrings.forEach(resultSubstring => {
-
+    runConstants.successfulResultSubstrings.forEach((resultSubstring) => {
       expect(result.stdout + result.stderr).to.include(resultSubstring);
     });
   });
@@ -89,8 +88,8 @@ describe('provar automation test run NUTs', () => {
     const configFilePatheData = fileSystem.readFileSync(configFilePath, { encoding: 'utf8' });
     const configFilePathParsed = JSON.parse(configFilePatheData);
     configFilePathParsed['PROVARDX_PROPERTIES_FILE_PATH'] = path.join(process.cwd(), './provardx-properties.json');
-    const updatedCongiFileData = JSON.stringify(configFilePathParsed, null, 4);
-    fileSystem.writeFileSync(configFilePath, updatedCongiFileData, 'utf8');
+    const updatedCongigFileData = JSON.stringify(configFilePathParsed, null, 4);
+    fileSystem.writeFileSync(configFilePath, updatedCongigFileData, 'utf8');
     const SET_PROVAR_HOME_VALUE = path.join(process.cwd(), './ProvarHome').replace(/\\/g, '/');
     const SET_PROJECT_PATH_VALUE = path.join(process.cwd(), './ProvarRegression/AutomationRevamp').replace(/\\/g, '/');
     const SET_RESULT_PATH = './';
@@ -119,7 +118,7 @@ describe('provar automation test run NUTs', () => {
       filePath = outputFile;
     }
     const fileContent = fileSystem.readFileSync(filePath, 'utf-8');
-    runConstants.successfulResultSubstrings.forEach(resultSubstring => {
+    runConstants.successfulResultSubstrings.forEach((resultSubstring) => {
       expect(fileContent).to.include(resultSubstring);
     });
   });
@@ -152,7 +151,7 @@ describe('provar automation test run NUTs', () => {
       `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND}`
     ).shellOutput;
     expect(result.stderr).to.deep.contains(runConstants.errorMessage);
-    runConstants.successfulResultSubstrings.forEach(resultSubstring => {
+    runConstants.successfulResultSubstrings.forEach((resultSubstring) => {
       expect(result.stdout + result.stderr).to.include(resultSubstring);
     });
   });
@@ -192,7 +191,7 @@ describe('provar automation test run NUTs', () => {
       `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND}`
     ).shellOutput;
     expect(result.stderr).to.deep.contains(runConstants.errorMessage);
-    runConstants.successfulResultSubstrings.forEach(resultSubstring => {
+    runConstants.successfulResultSubstrings.forEach((resultSubstring) => {
       expect(result.stdout + result.stderr).to.include(resultSubstring);
     });
   });

@@ -16,7 +16,7 @@ import {
   SfProvarCommandResult,
   Messages,
 } from '@provartesting/provardx-plugins-utils';
-import { SfProvarAutomationTestRun } from '../../../../result/sfProvarAutomationTestRunResult.js';
+import { SfProvarAutomationTestRunResult } from '../../../../result/sfProvarAutomationTestRunResult.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const mdFile: string = 'provar.automation.test.run';
@@ -39,14 +39,19 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
     const { flags } = await this.parse(ProvarAutomationTestRun);
     const config: ProvarConfig = await ProvarConfig.loadConfig(this.genericErrorHandler);
     const propertiesFilePath = config.get('PROVARDX_PROPERTIES_FILE_PATH')?.toString();
-    const sfProvarAutomationTestRun = new SfProvarAutomationTestRun();
+    const sfProvarAutomationTestRunResult = new SfProvarAutomationTestRunResult();
 
     if (propertiesFilePath === undefined || !fileSystem.existsSync(propertiesFilePath)) {
       const errorObj: GenericError = new GenericError();
       errorObj.setCode('MISSING_FILE');
       errorObj.setMessage(errorMessages.MISSING_FILE_ERROR);
       this.genericErrorHandler.addErrorsToList(errorObj);
-      return sfProvarAutomationTestRun.populateResult(flags, this.genericErrorHandler, messages, this.log.bind(this));
+      return sfProvarAutomationTestRunResult.populateResult(
+        flags,
+        this.genericErrorHandler,
+        messages,
+        this.log.bind(this)
+      );
     }
 
     try {
@@ -81,7 +86,12 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
         this.genericErrorHandler
       );
       if (userInfo === null) {
-        return sfProvarAutomationTestRun.populateResult(flags, this.genericErrorHandler, messages, this.log.bind(this));
+        return sfProvarAutomationTestRunResult.populateResult(
+          flags,
+          this.genericErrorHandler,
+          messages,
+          this.log.bind(this)
+        );
       }
       const userInfoString = userSupport.prepareRawProperties(JSON.stringify({ dxUsers: userInfo }));
       const projectPath = propertiesInstance.projectPath;
@@ -90,7 +100,12 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
         errorObj.setCode('INVALID_PATH');
         errorObj.setMessage('projectPath does not exist');
         this.genericErrorHandler.addErrorsToList(errorObj);
-        return sfProvarAutomationTestRun.populateResult(flags, this.genericErrorHandler, messages, this.log.bind(this));
+        return sfProvarAutomationTestRunResult.populateResult(
+          flags,
+          this.genericErrorHandler,
+          messages,
+          this.log.bind(this)
+        );
       }
 
       const provarDxJarPath = propertiesInstance.provarHome + '/provardx/provardx.jar';
@@ -112,7 +127,12 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
         errorObj.setMessage(errorMessages.MALFORMED_FILE_ERROR);
         this.genericErrorHandler.addErrorsToList(errorObj);
       } else if (error.name === 'MultipleFailureError') {
-        return sfProvarAutomationTestRun.populateResult(flags, this.genericErrorHandler, messages, this.log.bind(this));
+        return sfProvarAutomationTestRunResult.populateResult(
+          flags,
+          this.genericErrorHandler,
+          messages,
+          this.log.bind(this)
+        );
       } else {
         const errorObj: GenericError = new GenericError();
         errorObj.setCode('GENERIC_ERROR');
@@ -120,7 +140,12 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
         this.genericErrorHandler.addErrorsToList(errorObj);
       }
     }
-    return sfProvarAutomationTestRun.populateResult(flags, this.genericErrorHandler, messages, this.log.bind(this));
+    return sfProvarAutomationTestRunResult.populateResult(
+      flags,
+      this.genericErrorHandler,
+      messages,
+      this.log.bind(this)
+    );
   }
 
   private async runJavaCommand(command: string, logFilePath: string): Promise<void> {
@@ -169,7 +194,7 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
       this.genericErrorHandler.addErrorsToList(errorObj);
     }
 
-    if (!logFilePath) {
+    if (logFilePath) {
       try {
         fileSystem.appendFileSync(path.resolve(logFilePath), logMessage, { encoding: 'utf-8' });
       } catch (error: any) {

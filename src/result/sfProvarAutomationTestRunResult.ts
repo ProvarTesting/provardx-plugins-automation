@@ -7,7 +7,7 @@ import {
 import { Messages } from '@salesforce/core';
 
 /* eslint-disable */
-export class SfProvarAutomationTestRun extends SFProvarResult {
+export class SfProvarAutomationTestRunResult extends SFProvarResult {
   /**
    * Declaring return type and populating return object for async run method of the commands.
    *
