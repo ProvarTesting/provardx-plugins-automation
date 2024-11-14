@@ -10,9 +10,9 @@ import {
   populateResult,
   UserSupport,
   fileContainsString,
-  removeSpaces,
   getStringAfterSubstring,
   Messages,
+  removeSpaces,
 } from '@provartesting/provardx-plugins-utils';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
@@ -49,10 +49,8 @@ export default class ProvarMetadataDownload extends SfCommand<SfProvarCommandRes
       const propertiesInstance = JSON.parse(propertiesdata);
 
       if (flags.connections) {
-        propertiesInstance.connectionName = removeSpaces(flags.connections);
+        this.doConnectionOverrides(propertiesInstance, flags?.connections);
       }
-
-      this.doConnectionOverrides(propertiesInstance);
 
       const rawProperties = JSON.stringify(propertiesInstance);
       const userSupport = new UserSupport();
@@ -92,14 +90,11 @@ export default class ProvarMetadataDownload extends SfCommand<SfProvarCommandRes
     return populateResult(flags, this.errorHandler, messages, this.log.bind(this));
   }
 
-  private doConnectionOverrides(properties: any): void {
-    if (!properties.connectionOverride && !properties.connectionName) {
-      return;
-    }
+  private doConnectionOverrides(properties: any, flagConnections: string): void {
+    const connections = removeSpaces(flagConnections).split(',');
+    const connectionOverride: { connection: string; username: string }[] = [];
 
-    if (properties.connectionName && properties.connectionOverride) {
-      const connections = properties.connectionName.split(',');
-      const connectionOverride = [];
+    if (properties.connectionOverride) {
       for (const override of properties.connectionOverride) {
         if (connections.indexOf(override.connection) !== -1) {
           connectionOverride.push(override);
@@ -107,5 +102,11 @@ export default class ProvarMetadataDownload extends SfCommand<SfProvarCommandRes
       }
       properties.connectionOverride = connectionOverride;
     }
+
+    const connectionProperty: string[] = connections.filter(
+      (connection) => !connectionOverride.some((override) => override?.connection === connection)
+    );
+
+    properties.connectionName = connectionProperty.join(',');
   }
 }
