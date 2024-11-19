@@ -88,8 +88,8 @@ describe('provar automation test run NUTs', () => {
     const configFilePatheData = fileSystem.readFileSync(configFilePath, { encoding: 'utf8' });
     const configFilePathParsed = JSON.parse(configFilePatheData);
     configFilePathParsed['PROVARDX_PROPERTIES_FILE_PATH'] = path.join(process.cwd(), './provardx-properties.json');
-    const updatedCongigFileData = JSON.stringify(configFilePathParsed, null, 4);
-    fileSystem.writeFileSync(configFilePath, updatedCongigFileData, 'utf8');
+    const updatedConfigFileData = JSON.stringify(configFilePathParsed, null, 4);
+    fileSystem.writeFileSync(configFilePath, updatedConfigFileData, 'utf8');
     const SET_PROVAR_HOME_VALUE = path.join(process.cwd(), './ProvarHome').replace(/\\/g, '/');
     const SET_PROJECT_PATH_VALUE = path.join(process.cwd(), './ProvarRegression/AutomationRevamp').replace(/\\/g, '/');
     const SET_RESULT_PATH = './';
