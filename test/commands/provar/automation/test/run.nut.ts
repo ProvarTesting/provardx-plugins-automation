@@ -76,7 +76,51 @@ describe('provar automation test run NUTs', () => {
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND}`
     ).shellOutput;
-    expect(result.stdout).to.deep.equal(runConstants.successMessage);
+
+    expect(result.stdout).to.deep.contains(runConstants.successMessage);
+    runConstants.successfulResultSubstrings.forEach((resultSubstring) => {
+      expect(result.stdout + result.stderr).to.include(resultSubstring);
+    });
+  });
+
+  it('Test Run command should be successful in outputfile', async () => {
+    /* eslint-disable */
+    const configFilePatheData = fileSystem.readFileSync(configFilePath, { encoding: 'utf8' });
+    const configFilePathParsed = JSON.parse(configFilePatheData);
+    configFilePathParsed['PROVARDX_PROPERTIES_FILE_PATH'] = path.join(process.cwd(), './provardx-properties.json');
+    const updatedConfigFileData = JSON.stringify(configFilePathParsed, null, 4);
+    fileSystem.writeFileSync(configFilePath, updatedConfigFileData, 'utf8');
+    const SET_PROVAR_HOME_VALUE = path.join(process.cwd(), './ProvarHome').replace(/\\/g, '/');
+    const SET_PROJECT_PATH_VALUE = path.join(process.cwd(), './ProvarRegression/AutomationRevamp').replace(/\\/g, '/');
+    const SET_RESULT_PATH = './';
+    interface PropertyFileJsonData {
+      [key: string]: string | boolean | number | string[];
+    }
+    const jsonDataString = fileSystem.readFileSync(jsonFilePath, 'utf-8');
+    const jsonData: PropertyFileJsonData = JSON.parse(jsonDataString) as PropertyFileJsonData;
+    jsonData.provarHome = SET_PROVAR_HOME_VALUE;
+    jsonData.projectPath = SET_PROJECT_PATH_VALUE;
+    jsonData.resultsPath = SET_RESULT_PATH;
+    jsonData.testCase = ['/Test Case 5.testcase'];
+    const updatedJsonDataString = JSON.stringify(jsonData, null, 2);
+    fileSystem.writeFileSync(jsonFilePath, updatedJsonDataString, 'utf-8');
+    const outputFile = runConstants.outputFileAtRelativeLocation;
+    let filePath = '';
+    const result = execCmd<SfProvarCommandResult>(
+      `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND} -o ${outputFile}`
+    ).shellOutput;
+    expect(result.stdout).to.deep.contains('The test results are stored in ' + outputFile + '\n');
+    if (!outputFile.match('/')) {
+      filePath = path.join(process.cwd(), 'result.txt');
+    } else if (outputFile.startsWith('.')) {
+      filePath = path.join(process.cwd(), outputFile.replace(outputFile.charAt(0), ''));
+    } else {
+      filePath = outputFile;
+    }
+    const fileContent = fileSystem.readFileSync(filePath, 'utf-8');
+    runConstants.successfulResultSubstrings.forEach((resultSubstring) => {
+      expect(fileContent).to.include(resultSubstring);
+    });
   });
   it('Test Run command should be successful and return result in json', () => {
     const result = execCmd<SfProvarCommandResult>(
@@ -84,6 +128,15 @@ describe('provar automation test run NUTs', () => {
     ).jsonOutput;
     expect(result).to.deep.equal(runConstants.SuccessJson);
   });
+
+  it('Test Run command should be successful in case of outfile and return result in json', () => {
+    const outputFile = runConstants.outputFileAtRelativeLocation;
+    const result = execCmd<SfProvarCommandResult>(
+      `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND} -o ${outputFile} --json`
+    ).jsonOutput;
+    expect(result).to.deep.equal(runConstants.SuccessJson);
+  });
+
   it('Test Run command should not be successful and return the error', () => {
     interface PropertyFileJsonData {
       [key: string]: string | boolean | number | string[];
@@ -97,7 +150,10 @@ describe('provar automation test run NUTs', () => {
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND}`
     ).shellOutput;
-    expect(result.stderr).to.deep.equal(runConstants.errorMessage);
+    expect(result.stderr).to.deep.contains(runConstants.errorMessage);
+    runConstants.successfulResultSubstrings.forEach((resultSubstring) => {
+      expect(result.stdout + result.stderr).to.include(resultSubstring);
+    });
   });
 
   it('Test Run command should not be successful and return result in json format', () => {
@@ -134,7 +190,10 @@ describe('provar automation test run NUTs', () => {
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND}`
     ).shellOutput;
-    expect(result.stderr).to.deep.equal(runConstants.errorMessage);
+    expect(result.stderr).to.deep.contains(runConstants.errorMessage);
+    runConstants.successfulResultSubstrings.forEach((resultSubstring) => {
+      expect(result.stdout + result.stderr).to.include(resultSubstring);
+    });
   });
 
   it('Test case should be Executed successfully when Environment is encrypted and return result in json format', () => {
