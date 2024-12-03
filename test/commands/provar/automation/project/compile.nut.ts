@@ -13,37 +13,31 @@ import { Global } from '@salesforce/core';
 import * as compileConstants from '../../../../assertion/compileConstants.js';
 import * as validateConstants from '../../../../assertion/validateConstants.js';
 
+let configFilePath = '';
+enum FILE_PATHS {
+  PROVARDX_PROPERTIES_FILE = 'provardx-properties.json',
+}
+const jsonFilePath = FILE_PATHS.PROVARDX_PROPERTIES_FILE;
+interface PropertyFileJsonData {
+  [key: string]: string | boolean | number;
+}
 describe('provar automation project compile NUTs', () => {
-  let configFilePath = '';
-  enum FILE_PATHS {
-    PROVARDX_PROPERTIES_FILE = 'provardx-properties.json',
-  }
-  const jsonFilePath = FILE_PATHS.PROVARDX_PROPERTIES_FILE;
-  interface PropertyFileJsonData {
-    [key: string]: string | boolean | number;
-  }
-  const boilerplateFilePath = path.join(process.cwd(), './provardx-properties.json');
-  const emptyBoilerplate = JSON.stringify({}, null, 2);
-  fileSystem.writeFileSync(boilerplateFilePath, emptyBoilerplate, 'utf8');
   before(async () => {
-    void UpdateFileConfigSfdx();
-    async function UpdateFileConfigSfdx(): Promise<void> {
-      const files = await fs.readdir(Global.SF_DIR);
-      const configFileName = files.find((filename) => filename.match('config.json'));
-      if (!configFileName) {
-        configFilePath = path.join(Global.SF_DIR, 'config.json');
-        const emptyConfig = JSON.stringify({}, null, 2);
-        await fs.writeFile(configFilePath, emptyConfig, 'utf8');
-      } else {
-        configFilePath = path.join(`${Global.SF_DIR}`, `${configFileName}`);
-      }
+    const jsonData: PropertyFileJsonData = {};
+    Object.assign(jsonData, propertyFileContent);
+    const updatedJsonDataString = JSON.stringify(jsonData, null, 2);
+    await fs.writeFile(jsonFilePath, updatedJsonDataString, 'utf-8');
+
+    const files = await fs.readdir(Global.SF_DIR);
+    const configFileName = files.find((filename) => filename.match('config.json'));
+    if (!configFileName) {
+      configFilePath = path.join(Global.SF_DIR, 'config.json');
+      const emptyConfig = JSON.stringify({}, null, 2);
+      await fs.writeFile(configFilePath, emptyConfig, 'utf8');
+    } else {
+      configFilePath = path.join(`${Global.SF_DIR}`, `${configFileName}`);
     }
   });
-  const jsonDataString = fileSystem.readFileSync(jsonFilePath, 'utf-8');
-  const jsonData: PropertyFileJsonData = JSON.parse(jsonDataString) as PropertyFileJsonData;
-  Object.assign(jsonData, propertyFileContent);
-  const updatedJsonDataString = JSON.stringify(jsonData, null, 2);
-  fileSystem.writeFileSync(jsonFilePath, updatedJsonDataString, 'utf-8');
 
   it('Boilerplate json file should not be compiled if the file has not been loaded', async () => {
     const fileData = fileSystem.readFileSync(configFilePath, { encoding: 'utf8' });
@@ -55,12 +49,6 @@ describe('provar automation project compile NUTs', () => {
     const updatedFileData = JSON.stringify(configFile, null, 4);
     fileSystem.writeFileSync(configFilePath, updatedFileData, 'utf8');
 
-    const jsonDataString = fileSystem.readFileSync(jsonFilePath, 'utf-8');
-    const jsonData: PropertyFileJsonData = JSON.parse(jsonDataString) as PropertyFileJsonData;
-    jsonData.provarHome = '';
-    jsonData.projectPath = '';
-    const updatedJsonDataString = JSON.stringify(jsonData, null, 2);
-    fileSystem.writeFileSync(jsonFilePath, updatedJsonDataString, 'utf-8');
     const res = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_PROJECT_COMPILE_COMMAND}`
     ).shellOutput;
