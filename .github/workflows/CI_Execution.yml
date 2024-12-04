@@ -93,12 +93,10 @@ jobs:
         
       - name: Link utils package
         run: yarn link @provartesting/provardx-plugins-utils
-        
       - name: Build the project
         run: |
            sf plugins link .
            yarn prepack
-           
       - name: Check out Regression repo
         uses: actions/checkout@v4
         with:
@@ -149,6 +147,7 @@ jobs:
           New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\Provar\.licenses"
           Set-Content -Path "$env:USERPROFILE\Provar\.licenses\License.properties" -Value $env:MY_LICENSE
         shell: pwsh
+
       - name: Execute NUTS
         run: |
           sf plugins link .

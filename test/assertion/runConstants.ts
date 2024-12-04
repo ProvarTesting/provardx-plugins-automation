@@ -46,3 +46,4 @@ export const successfulResultSubstrings = ['INFO:------------------',
 ];
 
 export const outputFileAtRelativeLocation = './test/commands/provar/automation/test/Result.txt';
+

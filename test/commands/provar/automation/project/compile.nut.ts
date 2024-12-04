@@ -38,6 +38,11 @@ describe('provar automation project compile NUTs', () => {
       configFilePath = path.join(`${Global.SF_DIR}`, `${configFileName}`);
     }
   });
+  const jsonDataString = fileSystem.readFileSync(jsonFilePath, 'utf-8');
+  const jsonData: PropertyFileJsonData = JSON.parse(jsonDataString) as PropertyFileJsonData;
+  Object.assign(jsonData, propertyFileContent);
+  const updatedJsonDataString = JSON.stringify(jsonData, null, 2);
+  fileSystem.writeFileSync(jsonFilePath, updatedJsonDataString, 'utf-8');
 
   it('Boilerplate json file should not be compiled if the file has not been loaded', async () => {
     const fileData = fileSystem.readFileSync(configFilePath, { encoding: 'utf8' });
@@ -48,7 +53,6 @@ describe('provar automation project compile NUTs', () => {
     }
     const updatedFileData = JSON.stringify(configFile, null, 4);
     fileSystem.writeFileSync(configFilePath, updatedFileData, 'utf8');
-
     const res = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_PROJECT_COMPILE_COMMAND}`
     ).shellOutput;
