@@ -14,7 +14,7 @@ on:
     inputs:
       OS:
         description: 'Comma-separated list of OS versions e.g. "macos-latest, windows-latest, ubuntu-latest"'
-        default: '"ubuntu-latest"'
+        default: 'ubuntu-latest'  # Providing default directly here
         required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -25,7 +25,8 @@ jobs:
       MY_LICENSE: ${{ secrets.PROVAR_LICENSE }}
     strategy:
       matrix:
-        os: ${{ fromJSON(format('[{0}]', inputs.OS || '"ubuntu-latest" || "macos-latest"')) }}
+        # Parse the input OS list correctly or fall back to default
+        os: ${{ fromJSON(format('[{0}]', inputs.OS || '["ubuntu-latest"]')) }}
         nodeversion: [18]
     runs-on: ${{ matrix.os }}
     steps:
