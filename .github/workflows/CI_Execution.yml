@@ -26,7 +26,7 @@ jobs:
     strategy:
       matrix:
         # Parse the input OS list correctly or fall back to default
-        os: ${{ fromJSON(format('[{0}]', inputs.OS || '["ubuntu-latest"]')) }}
+        os: ${{ fromJSON(format('[{0}]', inputs.OS != '' && inputs.OS || '["ubuntu-latest"]')) }}
         nodeversion: [18]
     runs-on: ${{ matrix.os }}
     steps:
