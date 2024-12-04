@@ -23,3 +23,27 @@ export const errorJson = {
 };
 export const environmentName = 'Env';
 export const secretsPassword = "Priya@123+,-./:;_{|}~'()*<=>?[]^!#$%&";
+
+export const successfulResultSubstrings = ['INFO:------------------',
+  'INFO:Validating License',
+  'Found Provar license.',
+  'Activating license ...',
+  'Provar license activated successfully.',
+  'INFO:-------------------------------------------------------------------------------------',
+  'INFO:ProvarDx execution started with Provar Version',
+  'Found test case.',
+  'Test Output INFO: Adding Test File.  File/Folder:',
+  'Test Output INFO: Added Execution Item.  tests',
+  'Test Output INFO: Loading test case.  File:',
+  'Test Output INFO: Added Execution Item.',
+  'Listening for transport dt_socket at address:',
+  'Test Run Started',
+  'Execution Item Started.  Title:',
+  'Execution Item Ended.  Title:',
+  'Test Run Ended',
+  'JUnit XML report written ',
+  'successfully.'
+];
+
+export const outputFileAtRelativeLocation = './test/commands/provar/automation/test/Result.txt';
+
