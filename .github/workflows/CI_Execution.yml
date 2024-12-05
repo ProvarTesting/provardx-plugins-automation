@@ -152,7 +152,7 @@ jobs:
         shell: pwsh
       - name: Execute NUTS
         run: |
-          sf plugins link .
+    
           echo ${JAVA_HOME}
           yarn run test:nuts
       - name: Archive NUTS results
