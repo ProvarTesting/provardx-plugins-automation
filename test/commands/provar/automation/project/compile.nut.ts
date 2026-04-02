@@ -72,7 +72,7 @@ describe('provar automation project compile NUTs', () => {
     const updatedCongiFileData = JSON.stringify(configFilePathParsed, null, 4);
     fileSystem.writeFileSync(configFilePath, updatedCongiFileData, 'utf8');
     const SET_PROVAR_HOME_VALUE = path.join(process.cwd(), './ProvarHome').replace(/\\/g, '/');
-    const SET_PROJECT_PATH_VALUE = path.join(process.cwd(), './ProvarRegression/AutomationRevamp').replace(/\\/g, '/');
+    const SET_PROJECT_PATH_VALUE = path.join(process.cwd(), './ProvarDXGrid').replace(/\\/g, '/');
 
     const jsonDataString = fileSystem.readFileSync(jsonFilePath, 'utf-8');
     const jsonData: PropertyFileJsonData = JSON.parse(jsonDataString) as PropertyFileJsonData;

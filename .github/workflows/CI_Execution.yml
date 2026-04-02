@@ -112,9 +112,9 @@ jobs:
       - name: Check out Regression repo
         uses: actions/checkout@v4
         with:
-          repository: ProvarTesting/ProvarRegression
-          path: ProvarRegression
-          ref: AnchalGoel
+          repository: mrdailey99/ProvarDXGrid
+          path: ProvarDXGrid
+          ref: main
           token: ${{ secrets.PATREGRESSION }}
       - name: Change permissions
         run: |
