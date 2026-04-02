@@ -107,6 +107,7 @@ jobs:
       - name: Build the project
         run: |
            yarn prepack
+           rm -f npm-shrinkwrap.json
            sf plugins link .
            
       - name: Check out Regression repo
