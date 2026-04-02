@@ -34,7 +34,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'corretto'
-          java-version: '11'
+          java-version: '21'
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.nodeversion }}
@@ -106,8 +106,8 @@ jobs:
         
       - name: Build the project
         run: |
-           sf plugins link .
            yarn prepack
+           sf plugins link .
            
       - name: Check out Regression repo
         uses: actions/checkout@v4
@@ -161,7 +161,6 @@ jobs:
         shell: pwsh
       - name: Execute NUTS
         run: |
-          sf plugins link .
           echo ${JAVA_HOME}
           yarn run test:nuts
       - name: Archive NUTS results
