@@ -108,7 +108,7 @@ jobs:
         run: |
            yarn prepack
            rm -f npm-shrinkwrap.json
-           sf plugins link .
+           sf plugins link . --no-install
            
       - name: Check out Regression repo
         uses: actions/checkout@v4
