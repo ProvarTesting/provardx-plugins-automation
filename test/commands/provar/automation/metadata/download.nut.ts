@@ -25,6 +25,11 @@ describe('sf provar config metadataDownload NUTs', () => {
       .join(process.cwd(), './ProvarDXGrid')
       .replace(/\\/g, '/');
     setNestedProperty(provarDXPropertiesFileParsed, 'metadata.metadataLevel', 'Reuse');
+    if (process.env.SECRETS_PASSWORD) {
+      provarDXPropertiesFileParsed['environmentsSecrets'] = [
+        { name: 'Default', secretsPassword: process.env.SECRETS_PASSWORD },
+      ];
+    }
     const updatedPropertiesFileData = JSON.stringify(provarDXPropertiesFileParsed, null, 4);
     await fileSystem.writeFile(provarDXPropertiesFilePath1, updatedPropertiesFileData, 'utf8');
 

@@ -12,7 +12,6 @@ export const secretsPassword = "Priya@123+,-./:;_{|}~'()*<=>?[]^!#$%&";
 export const successfulResultSubstrings = [
   'INFO:Validating License',
   'Found Provar license.',
-  'INFO:ProvarDx execution started with Provar Version',
   'Test Run Started',
   'Execution Item Started.  Title:',
   'Execution Item Ended.  Title:',

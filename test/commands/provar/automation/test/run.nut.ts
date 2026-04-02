@@ -143,7 +143,7 @@ describe('provar automation test run NUTs', () => {
     }
     const jsonDataString = fileSystem.readFileSync(jsonFilePath, 'utf-8');
     const jsonData: PropertyFileJsonData = JSON.parse(jsonDataString) as PropertyFileJsonData;
-    jsonData.testCase = ['/tests/NonExistent.testcase'];
+    jsonData.provarHome = '/invalid/provar/home/path';
     const updatedJsonDataString = JSON.stringify(jsonData, null, 2);
     fileSystem.writeFileSync(jsonFilePath, updatedJsonDataString, 'utf-8');
 
@@ -173,7 +173,7 @@ describe('provar automation test run NUTs', () => {
     }
     const jsonDataString = fileSystem.readFileSync(jsonFilePath, 'utf-8');
     const jsonData: PropertyFileJsonData = JSON.parse(jsonDataString) as PropertyFileJsonData;
-    jsonData.testCase = ['/tests/NonExistent.testcase'];
+    jsonData.provarHome = '/invalid/provar/home/path';
     setNestedProperty(jsonData, 'environment.testEnvironment', 'Env');
     jsonData.environmentsSecrets = [
       {

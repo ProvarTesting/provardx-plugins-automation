@@ -23,6 +23,7 @@ jobs:
     env:
       DISPLAY: :0
       MY_LICENSE: ${{ secrets.PROVAR_LICENSE }}
+      SECRETS_PASSWORD: ${{ secrets.PROVAR_SECRETS_PASSWORD }}
     strategy:
       matrix:
         os: ${{ fromJSON(inputs.OS && format('[{0}]', inputs.OS) || '["ubuntu-latest"]') }}
