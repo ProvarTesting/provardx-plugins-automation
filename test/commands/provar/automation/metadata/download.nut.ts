@@ -22,9 +22,12 @@ describe('sf provar config metadataDownload NUTs', () => {
     const provarDXPropertiesFileParsed = JSON.parse(provarDXPropertiesFileData);
     provarDXPropertiesFileParsed['provarHome'] = path.join(process.cwd(), './ProvarHome').replace(/\\/g, '/');
     provarDXPropertiesFileParsed['projectPath'] = path
-      .join(process.cwd(), './ProvarRegression/AutomationRevamp')
+      .join(process.cwd(), './ProvarDXGrid')
       .replace(/\\/g, '/');
     setNestedProperty(provarDXPropertiesFileParsed, 'metadata.metadataLevel', 'Reuse');
+    if (process.env.SECRETS_PASSWORD) {
+      provarDXPropertiesFileParsed['testprojectSecrets'] = process.env.SECRETS_PASSWORD;
+    }
     const updatedPropertiesFileData = JSON.stringify(provarDXPropertiesFileParsed, null, 4);
     await fileSystem.writeFile(provarDXPropertiesFilePath1, updatedPropertiesFileData, 'utf8');
 
@@ -59,7 +62,7 @@ describe('sf provar config metadataDownload NUTs', () => {
 
   it('Metadata should be downloaded for the provided connection and return the success message', async () => {
     const result = execCmd<SfProvarCommandResult>(
-      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} -c RegmainOrg`
+      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} -c Admin`
     ).shellOutput;
 
     expect(result.stdout).to.deep.equal(metadataDownloadConstants.successMessage);
@@ -67,7 +70,7 @@ describe('sf provar config metadataDownload NUTs', () => {
 
   it('Metadata should be downloaded for the provided connection and return the success message in json format', () => {
     const result = execCmd<SfProvarCommandResult>(
-      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} -c RegressionOrg --json`
+      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} -c Admin --json`
     ).jsonOutput;
     expect(result).to.deep.equal(metadataDownloadConstants.successJsonMessage);
   });
@@ -119,7 +122,7 @@ describe('sf provar config metadataDownload NUTs', () => {
     const updatedPropertiesFileData = JSON.stringify(provarDXPropertiesFileParsed, null, 4);
     await fileSystem.writeFile(provarDXPropertiesFilePath, updatedPropertiesFileData, 'utf8');
     const result = execCmd<SfProvarCommandResult>(
-      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} -c RegressionOrg`
+      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} -c Admin`
     ).shellOutput;
     expect(result.stderr).to.include(DOWNLOAD_ERROR);
   });
@@ -132,7 +135,7 @@ describe('sf provar config metadataDownload NUTs', () => {
     const updatedPropertiesFileData = JSON.stringify(provarDXPropertiesFileParsed, null, 4);
     await fileSystem.writeFile(provarDXPropertiesFilePath, updatedPropertiesFileData, 'utf8');
     const result = execCmd<SfProvarCommandResult>(
-      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} -c RegressionOrg --json`
+      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} -c Admin --json`
     ).jsonOutput;
     expect(result?.result.success).to.deep.equal(false);
     expect((result?.result.errors?.[0] as any)?.code).to.equals('DOWNLOAD_ERROR');
@@ -146,7 +149,7 @@ describe('sf provar config metadataDownload NUTs', () => {
     const updatedPropertiesFileData = JSON.stringify(provarDXPropertiesFileParsed, null, 4);
     await fileSystem.writeFile(provarDXPropertiesFilePath, updatedPropertiesFileData, 'utf8');
     const result = execCmd<SfProvarCommandResult>(
-      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} -c RegressionOrg --json`
+      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} -c Admin --json`
     ).jsonOutput;
     expect(result?.result.success).to.deep.equal(false);
     expect((result?.result.errors?.[0] as any)?.code).to.equals('DOWNLOAD_ERROR');
@@ -158,20 +161,20 @@ describe('sf provar config metadataDownload NUTs', () => {
     const provarDXPropertiesFileParsed = JSON.parse(provarDXPropertiesFileData);
     provarDXPropertiesFileParsed['provarHome'] = path.join(process.cwd(), './ProvarHome').replace(/\\/g, '/');
     provarDXPropertiesFileParsed['projectPath'] = path
-      .join(process.cwd(), './ProvarRegression/AutomationRevamp')
+      .join(process.cwd(), './ProvarDXGrid')
       .replace(/\\/g, '/');
     setNestedProperty(provarDXPropertiesFileParsed, 'metadata.metadataLevel', 'xyz');
     const updatedPropertiesFileData = JSON.stringify(provarDXPropertiesFileParsed, null, 4);
     await fileSystem.writeFile(provarDXPropertiesFilePath1, updatedPropertiesFileData, 'utf8');
     const result = execCmd<SfProvarCommandResult>(
-      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} --connections RegmainOrg`
+      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} --connections Admin`
     ).shellOutput;
     expect(result.stderr).to.include(DOWNLOAD_ERROR);
   });
 
   it('Metadata should not be downloaded and return the json error message as invalid value exists in metadataLevel property', async () => {
     const result = execCmd<SfProvarCommandResult>(
-      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} -c RegmainOrg --json`
+      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} -c Admin --json`
     ).jsonOutput;
     expect(result?.result.success).to.deep.equal(false);
 
@@ -205,15 +208,15 @@ describe('sf provar config metadataDownload NUTs', () => {
 
   it('Missing file error as json file is not loaded', () => {
     const result = execCmd<SfProvarCommandResult>(
-      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} --connections RegressionOrg`
+      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} --connections Admin`
     ).shellOutput;
 
     expect(result.stderr).to.deep.equal(`Error (1): [MISSING_FILE] ${errorMessages.MISSING_FILE_ERROR}\n\n`);
   });
 
-  it('Missing file error as json file is not loaded', () => {
+  it('Missing file error as json file is not loaded with multiple connections', () => {
     const result = execCmd<SfProvarCommandResult>(
-      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} --connections "RegressionOrg,RegmainOrg"`
+      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} --connections "Admin,RegOrg"`
     ).shellOutput;
 
     expect(result.stderr).to.deep.equal(`Error (1): [MISSING_FILE] ${errorMessages.MISSING_FILE_ERROR}\n\n`);
@@ -221,7 +224,7 @@ describe('sf provar config metadataDownload NUTs', () => {
 
   it('Missing file json error in json format as json file is not loaded', () => {
     const result = execCmd<SfProvarCommandResult>(
-      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} -c RegressionOrg --json`,
+      `${commandConstants.SF_PROVAR_AUTOMATION_METADATA_DOWNLOAD_COMMAND} -c Admin --json`,
       {
         ensureExitCode: 0,
       }

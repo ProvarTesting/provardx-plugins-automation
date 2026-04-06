@@ -173,7 +173,7 @@ export default class ProvarAutomationTestRun extends SfCommand<SfProvarCommandRe
         this.extractReportAndAddFailuresToErrorHandler(logError, logFilePath);
       });
 
-      javaProcessOutput.stderr.on('finish', (error: { toString: () => string }) => {
+      javaProcessOutput.on('close', () => {
         resolvers.done();
       });
     } catch (error: any) {

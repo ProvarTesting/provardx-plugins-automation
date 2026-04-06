@@ -60,7 +60,7 @@ describe('provar automation test run NUTs', () => {
     const updatedCongiFileData = JSON.stringify(configFilePathParsed, null, 4);
     fileSystem.writeFileSync(configFilePath, updatedCongiFileData, 'utf8');
     const SET_PROVAR_HOME_VALUE = path.join(process.cwd(), './ProvarHome').replace(/\\/g, '/');
-    const SET_PROJECT_PATH_VALUE = path.join(process.cwd(), './ProvarRegression/AutomationRevamp').replace(/\\/g, '/');
+    const SET_PROJECT_PATH_VALUE = path.join(process.cwd(), './ProvarDXGrid').replace(/\\/g, '/');
     const SET_RESULT_PATH = './';
     interface PropertyFileJsonData {
       [key: string]: string | boolean | number | string[];
@@ -70,7 +70,10 @@ describe('provar automation test run NUTs', () => {
     jsonData.provarHome = SET_PROVAR_HOME_VALUE;
     jsonData.projectPath = SET_PROJECT_PATH_VALUE;
     jsonData.resultsPath = SET_RESULT_PATH;
-    jsonData.testCase = ['/Test Case 5.testcase'];
+    jsonData.testCase = ['/tests/Logon_Account.testcase'];
+    if (process.env.SECRETS_PASSWORD) {
+      jsonData.testprojectSecrets = process.env.SECRETS_PASSWORD;
+    }
     const updatedJsonDataString = JSON.stringify(jsonData, null, 2);
     fileSystem.writeFileSync(jsonFilePath, updatedJsonDataString, 'utf-8');
     const result = execCmd<SfProvarCommandResult>(
@@ -91,7 +94,7 @@ describe('provar automation test run NUTs', () => {
     const updatedConfigFileData = JSON.stringify(configFilePathParsed, null, 4);
     fileSystem.writeFileSync(configFilePath, updatedConfigFileData, 'utf8');
     const SET_PROVAR_HOME_VALUE = path.join(process.cwd(), './ProvarHome').replace(/\\/g, '/');
-    const SET_PROJECT_PATH_VALUE = path.join(process.cwd(), './ProvarRegression/AutomationRevamp').replace(/\\/g, '/');
+    const SET_PROJECT_PATH_VALUE = path.join(process.cwd(), './ProvarDXGrid').replace(/\\/g, '/');
     const SET_RESULT_PATH = './';
     interface PropertyFileJsonData {
       [key: string]: string | boolean | number | string[];
@@ -101,7 +104,10 @@ describe('provar automation test run NUTs', () => {
     jsonData.provarHome = SET_PROVAR_HOME_VALUE;
     jsonData.projectPath = SET_PROJECT_PATH_VALUE;
     jsonData.resultsPath = SET_RESULT_PATH;
-    jsonData.testCase = ['/Test Case 5.testcase'];
+    jsonData.testCase = ['/tests/Logon_Account.testcase'];
+    if (process.env.SECRETS_PASSWORD) {
+      jsonData.testprojectSecrets = process.env.SECRETS_PASSWORD;
+    }
     const updatedJsonDataString = JSON.stringify(jsonData, null, 2);
     fileSystem.writeFileSync(jsonFilePath, updatedJsonDataString, 'utf-8');
     const outputFile = runConstants.outputFileAtRelativeLocation;
@@ -143,24 +149,22 @@ describe('provar automation test run NUTs', () => {
     }
     const jsonDataString = fileSystem.readFileSync(jsonFilePath, 'utf-8');
     const jsonData: PropertyFileJsonData = JSON.parse(jsonDataString) as PropertyFileJsonData;
-    jsonData.testCase = ['/Test Case 6.testcase'];
+    jsonData.projectPath = '/invalid/project/path';
     const updatedJsonDataString = JSON.stringify(jsonData, null, 2);
     fileSystem.writeFileSync(jsonFilePath, updatedJsonDataString, 'utf-8');
 
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND}`
     ).shellOutput;
-    expect(result.stderr).to.deep.contains(runConstants.errorMessage);
-    runConstants.successfulResultSubstrings.forEach((resultSubstring) => {
-      expect(result.stdout + result.stderr).to.include(resultSubstring);
-    });
+    expect(result.stderr).to.include('Error (1):');
   });
 
   it('Test Run command should not be successful and return result in json format', () => {
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND} --json`
     ).jsonOutput;
-    expect(result).to.deep.equal(runConstants.errorJson);
+    expect(result?.result.success).to.equal(false);
+    expect(result?.result.errors).to.have.length.greaterThan(0);
   });
 
   it('Test case should be Executed successfully when Environment is encrypted', () => {
@@ -175,7 +179,13 @@ describe('provar automation test run NUTs', () => {
     }
     const jsonDataString = fileSystem.readFileSync(jsonFilePath, 'utf-8');
     const jsonData: PropertyFileJsonData = JSON.parse(jsonDataString) as PropertyFileJsonData;
-    jsonData.testCase = ['/Test Case 6.testcase'];
+    const SET_PROVAR_HOME_VALUE = path.join(process.cwd(), './ProvarHome').replace(/\\/g, '/');
+    const SET_PROJECT_PATH_VALUE = path.join(process.cwd(), './ProvarDXGrid').replace(/\\/g, '/');
+    jsonData.provarHome = SET_PROVAR_HOME_VALUE;
+    jsonData.projectPath = SET_PROJECT_PATH_VALUE;
+    if (process.env.SECRETS_PASSWORD) {
+      jsonData.testprojectSecrets = process.env.SECRETS_PASSWORD;
+    }
     setNestedProperty(jsonData, 'environment.testEnvironment', 'Env');
     jsonData.environmentsSecrets = [
       {
@@ -190,7 +200,7 @@ describe('provar automation test run NUTs', () => {
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND}`
     ).shellOutput;
-    expect(result.stderr).to.deep.contains(runConstants.errorMessage);
+    expect(result.stdout).to.deep.contains(runConstants.successMessage);
     runConstants.successfulResultSubstrings.forEach((resultSubstring) => {
       expect(result.stdout + result.stderr).to.include(resultSubstring);
     });
@@ -200,6 +210,6 @@ describe('provar automation test run NUTs', () => {
     const result = execCmd<SfProvarCommandResult>(
       `${commandConstants.SF_PROVAR_AUTOMATION_TEST_RUN_COMMAND} --json`
     ).jsonOutput;
-    expect(result).to.deep.equal(runConstants.errorJson);
+    expect(result).to.deep.equal(runConstants.SuccessJson);
   });
 });

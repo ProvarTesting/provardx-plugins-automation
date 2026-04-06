@@ -5,7 +5,7 @@ import * as setupConstants from '../../../assertion/setupConstants.js';
 
 describe('sf provar automation setup NUTs', () => {
   let testSession: TestSession;
-  const SET_VALID_BUILD_VERSION = '2.13.2';
+  const SET_VALID_BUILD_VERSION = '3.0.6';
 
   after(async () => {
     await testSession?.clean();

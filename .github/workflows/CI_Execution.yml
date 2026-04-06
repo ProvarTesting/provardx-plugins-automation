@@ -23,10 +23,11 @@ jobs:
     env:
       DISPLAY: :0
       MY_LICENSE: ${{ secrets.PROVAR_LICENSE }}
+      SECRETS_PASSWORD: ${{ secrets.PROVAR_SECRETS_PASSWORD }}
     strategy:
       matrix:
-        os: ${{ fromJSON(format('[{0}]', inputs.OS || '"ubuntu-latest" || "macos-latest"')) }}
-        nodeversion: [18]
+        os: ${{ fromJSON(inputs.OS && format('[{0}]', inputs.OS) || '["ubuntu-latest"]') }}
+        nodeversion: [20]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -34,12 +35,12 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'corretto'
-          java-version: '11'
+          java-version: '21'
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.nodeversion }}
       - name: 'Cache node_modules'
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ matrix.os == 'windows-latest' && 'C:\\Users\\runneradmin\\AppData\\Roaming\\npm-cache' || '~/.npm' }}
           key: ${{ runner.os }}-node-v${{ matrix.nodeversion }}-${{ hashFiles('**/package.json') }}
@@ -50,13 +51,23 @@ jobs:
           npm install -g @salesforce/cli 
 
       - name: Determine Branch Name
-        id: set_branch_name
-        uses: actions/github-script@v6
-        with:
-         script: |
-           const branchName = process.env.GITHUB_HEAD_REF || context.ref.replace('refs/heads/', '');
-           core.exportVariable('BRANCH_NAME', branchName);
-           return branchName;
+        if: matrix.os == 'windows-latest'
+        run: |
+          if ($env:GITHUB_HEAD_REF) {
+            echo "BRANCH_NAME=$env:GITHUB_HEAD_REF" | Out-File -FilePath $env:GITHUB_ENV -Append
+          } else {
+            echo "BRANCH_NAME=$(echo $env:GITHUB_REF -replace 'refs/heads/', '')" | Out-File -FilePath $env:GITHUB_ENV -Append
+          }
+
+      - name: Determine Branch Name for Ubuntu/Mac
+        if: matrix.os != 'windows-latest'
+        run: |
+          if [[ "${GITHUB_HEAD_REF}" ]]; then
+            echo "BRANCH_NAME=${GITHUB_HEAD_REF}" >> $GITHUB_ENV
+          else
+            echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+          fi
+        shell: bash
       - name: Check for target branch in Utils repo
         id: check_branch
         uses: actions/github-script@v6
@@ -96,15 +107,16 @@ jobs:
         
       - name: Build the project
         run: |
-           sf plugins link .
            yarn prepack
+           rm -f npm-shrinkwrap.json
+           sf plugins link . --no-install
            
       - name: Check out Regression repo
         uses: actions/checkout@v4
         with:
-          repository: ProvarTesting/ProvarRegression
-          path: ProvarRegression
-          ref: AnchalGoel
+          repository: mrdailey99/ProvarDXGrid
+          path: ProvarDXGrid
+          ref: main
           token: ${{ secrets.PATREGRESSION }}
       - name: Change permissions
         run: |
@@ -151,11 +163,10 @@ jobs:
         shell: pwsh
       - name: Execute NUTS
         run: |
-          sf plugins link .
           echo ${JAVA_HOME}
           yarn run test:nuts
       - name: Archive NUTS results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: nuts-report-${{ matrix.os }}
           path: |
