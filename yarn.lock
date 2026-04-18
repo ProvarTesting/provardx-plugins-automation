@@ -1667,7 +1667,7 @@
     widest-line "^3.1.0"
     wrap-ansi "^7.0.0"
 
-"@oclif/core@^3.26.0", "@oclif/core@^3.26.2", "@oclif/core@^3.26.6":
+"@oclif/core@^3.26.0", "@oclif/core@^3.26.2", "@oclif/core@^3.26.6", "@oclif/core@^3.27.0":
   version "3.27.0"
   resolved "https://registry.yarnpkg.com/@oclif/core/-/core-3.27.0.tgz#a22a4ff4e5811db7a182b1687302237a57802381"
   integrity sha512-Fg93aNFvXzBq5L7ztVHFP2nYwWU1oTCq48G0TjF/qC1UN36KWa2H5Hsm72kERd5x/sjy2M2Tn4kDEorUlpXOlw==
@@ -1793,14 +1793,14 @@
   resolved "https://registry.npmjs.org/@pkgjs/parseargs/-/parseargs-0.11.0.tgz"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
-"@provartesting/provardx-plugins-utils@1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@provartesting/provardx-plugins-utils/-/provardx-plugins-utils-1.3.1.tgz#febce06f230032f30575577a72a071ea862c8a68"
-  integrity sha512-lhGRqDgMCDY0hUyiSIUmXRIu8NFFHI50HYMECF/jXVYIu7GLmp1Tkyx7o8yQ1oH12TVyjsoGwmhe9Uw95sRE4w==
+"@provartesting/provardx-plugins-utils@1.3.3":
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/@provartesting/provardx-plugins-utils/-/provardx-plugins-utils-1.3.3.tgz#66b904c4edd70b10cabfb98e24d61ff2a18f18dc"
+  integrity sha512-+R4rWTy/aHJhykwev6iUCTOhW1hnkt1M/zOAk16SGdrOU9BWUBWTIU1jTLdLJeOTv8yGSoWrAfeTScSbwTL2mw==
   dependencies:
-    "@oclif/core" "^3.26.2"
+    "@oclif/core" "^3.27.0"
     "@salesforce/core" "^7.2.0"
-    "@salesforce/sf-plugins-core" "^9.0.1"
+    "@salesforce/sf-plugins-core" "^9.1.1"
     cli-ux "^6.0.9"
     jsonschema "^1.4.1"
     node-stream-zip "^1.15.0"
@@ -1924,7 +1924,7 @@
   resolved "https://registry.yarnpkg.com/@salesforce/schemas/-/schemas-1.10.3.tgz#52c867fdd60679cf216110aa49542b7ad391f5d1"
   integrity sha512-FKfvtrYTcvTXE9advzS25/DEY9yJhEyLvStm++eQFtnAaX1pe4G3oGHgiQ0q55BM5+0AlCh0+0CVtQv1t4oJRA==
 
-"@salesforce/sf-plugins-core@^9.0.1", "@salesforce/sf-plugins-core@^9.1.1":
+"@salesforce/sf-plugins-core@^9.1.1":
   version "9.1.1"
   resolved "https://registry.yarnpkg.com/@salesforce/sf-plugins-core/-/sf-plugins-core-9.1.1.tgz#8818fdb23e0f174d9e6dded0cf34a88be5e3cc44"
   integrity sha512-5d4vGLqb1NZoHvDpuTu96TsFg/lexdnQNWC0h7GhOqxikJBpxk6P1DEbk9HrZWL18Gs1YXO9OCj2g8nKqbIC/Q==
